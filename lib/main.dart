@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:freshmind/pages/auth_page.dart';
 import 'package:freshmind/pages/home.dart';
-import 'package:freshmind/widgets/login_widget.dart';
+import 'package:freshmind/utils.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: Utils.messengerKey,
       navigatorKey: navigatorKey,
       title: 'FreshMind',
       debugShowCheckedModeBanner: false,
@@ -47,7 +49,7 @@ class MyHomePage extends StatelessWidget {
                   title: 'Accueil',
                 );
               } else {
-                return const LogInWidget();
+                return const AuthPage();
               }
             }));
   }

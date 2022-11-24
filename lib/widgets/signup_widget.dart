@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -5,18 +6,19 @@ import 'package:freshmind/components/button.dart';
 import 'package:freshmind/main.dart';
 import 'package:freshmind/utils.dart';
 
-class LogInWidget extends StatefulWidget {
-  const LogInWidget({super.key, required this.onClickedSignUp});
+class SignUpWidget extends StatefulWidget {
+  final VoidCallback onClickedSignIn;
 
-  final VoidCallback onClickedSignUp;
+  const SignUpWidget({super.key, required this.onClickedSignIn});
 
   @override
-  _LogInWidgetState createState() => _LogInWidgetState();
+  _SignUpWidgetState createState() => _SignUpWidgetState();
 }
 
-class _LogInWidgetState extends State<LogInWidget> {
+class _SignUpWidgetState extends State<SignUpWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -28,12 +30,14 @@ class _LogInWidgetState extends State<LogInWidget> {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: formKey,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const SizedBox(
             height: 40,
           ),
-          const Text("Connexion",
+          const Text("S'identifier",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 30,
@@ -41,7 +45,7 @@ class _LogInWidgetState extends State<LogInWidget> {
           const SizedBox(
             height: 40,
           ),
-          TextField(
+          TextFormField(
             controller: emailController,
             cursorColor: Colors.white,
             textInputAction: TextInputAction.done,
@@ -49,9 +53,14 @@ class _LogInWidgetState extends State<LogInWidget> {
                 labelText: "Email",
                 focusColor: Colors.white,
                 fillColor: Colors.white),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (email) =>
+                email != null && !EmailValidator.validate(email)
+                    ? "Veuillez indiquer une adresse e-mail valide"
+                    : null,
           ),
           const SizedBox(height: 4),
-          TextField(
+          TextFormField(
             controller: passwordController,
             cursorColor: Colors.white,
             textInputAction: TextInputAction.done,
@@ -60,29 +69,36 @@ class _LogInWidgetState extends State<LogInWidget> {
                 focusColor: Colors.white,
                 fillColor: Colors.white),
             obscureText: true,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => value != null && value.length < 6
+                ? "Le mot de passe doit comporter au moins six caractères"
+                : null,
           ),
           const SizedBox(height: 20),
           Button(
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
-              title: "Me connecter",
+              title: "M'inscrire",
               elevation: 2,
-              onPressed: signIn),
+              onPressed: signUp),
           const SizedBox(height: 24),
           RichText(
-              text: TextSpan(text: "Nouveau sur FreshMind ?  ", children: [
+              text: TextSpan(text: "Déjà un compte ?  ", children: [
             TextSpan(
                 recognizer: TapGestureRecognizer()
-                  ..onTap = widget.onClickedSignUp,
-                text: "Créer un compte",
+                  ..onTap = widget.onClickedSignIn,
+                text: "Se connecter",
                 style: const TextStyle(
                     decoration: TextDecoration.underline,
                     fontWeight: FontWeight.bold))
           ]))
         ]),
-      );
+      ));
 
-  Future signIn() async {
+  Future signUp() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -90,7 +106,7 @@ class _LogInWidgetState extends State<LogInWidget> {
               child: CircularProgressIndicator(),
             ));
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
     } on FirebaseAuthException catch (e) {

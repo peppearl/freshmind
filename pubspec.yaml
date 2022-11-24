@@ -41,6 +41,7 @@ dependencies:
   firebase_core: ^2.3.0
   #Firebase auth
   firebase_auth: ^4.1.4
+  email_validator: '^2.1.16'
 
 dev_dependencies:
   flutter_test:
