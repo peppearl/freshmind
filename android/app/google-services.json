@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "178077896455",
+    "project_id": "freshmind-3de78",
+    "storage_bucket": "freshmind-3de78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178077896455:android:10c4c1ee2fb6bedf3d7fa2",
+        "android_client_info": {
+          "package_name": "com.example.freshmind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178077896455-4m0rj5dh8jdfee4qujlco9q2i269q0f6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxQnPGAbrBbvqwAipz5emcbztwsoab16Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178077896455-4m0rj5dh8jdfee4qujlco9q2i269q0f6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "178077896455-s2k46atltmkuc6snf7s565kavolnifkk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "fr.freshmind.freshmindapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
