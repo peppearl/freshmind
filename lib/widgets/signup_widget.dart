@@ -98,7 +98,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   Future signUp() async {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
-
     showDialog(
         context: context,
         barrierDismissible: false,

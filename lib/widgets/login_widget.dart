@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:freshmind/components/button.dart';
 import 'package:freshmind/main.dart';
+import 'package:freshmind/pages/forgot_password_page.dart';
 import 'package:freshmind/utils.dart';
 
 class LogInWidget extends StatefulWidget {
@@ -69,6 +70,19 @@ class _LogInWidgetState extends State<LogInWidget> {
               elevation: 2,
               onPressed: signIn),
           const SizedBox(height: 24),
+          GestureDetector(
+            child: const Text(
+              "Mot de passe oublié ?",
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const ForgotPasswordPage(),
+            )),
+          ),
+          const SizedBox(height: 16),
           RichText(
               text: TextSpan(text: "Nouveau sur FreshMind ?  ", children: [
             TextSpan(
