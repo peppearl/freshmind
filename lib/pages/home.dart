@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/components/button.dart';
+import 'package:freshmind/widgets/scroll_list_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -12,34 +12,93 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int pageIndex = 0;
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.title,
-            style: const TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+          style: const TextStyle(color: Colors.black),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text("Connecté en tant que "),
-              const SizedBox(height: 8),
-              Text(user.email!),
-              Button(
-                  backgroundColor: const Color(0xFF73BBB3),
-                  title: "Se déconnecter",
-                  elevation: 0,
-                  onPressed: () => FirebaseAuth.instance.signOut())
-            ],
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: getBody(),
+      bottomNavigationBar: bottomAppBar(),
+    );
+  }
+
+  Widget bottomAppBar() {
+    List iconItems = [
+      Icons.person_rounded,
+      Icons.home_rounded,
+      Icons.groups_rounded,
+    ];
+    List textItems = ["Profil", "Fonctionnalités", "Groupe"];
+    return Container(
+      height: 60,
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, 3), // changes position of shadow
           ),
-        ));
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(iconItems.length, (index) {
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                pageIndex = index;
+              });
+            },
+            child: Column(
+              children: [
+                Icon(
+                  iconItems[index],
+                  size: 30,
+                  color: pageIndex == index
+                      ? const Color.fromARGB(255, 101, 101, 101)
+                      : const Color.fromARGB(255, 169, 169, 169),
+                ),
+                const SizedBox(
+                  height: 3,
+                ),
+                Text(textItems[index],
+                    style: TextStyle(
+                        color: pageIndex == index
+                            ? const Color.fromARGB(255, 101, 101, 101)
+                            : const Color.fromARGB(255, 169, 169, 169)))
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget getBody() {
+    return IndexedStack(
+      index: pageIndex,
+      children: const [
+        Center(
+          child: Text("Profil"),
+        ),
+        ScrollListWidget(),
+        Center(
+          child: Text("Groupe"),
+        ),
+      ],
+    );
   }
 }
