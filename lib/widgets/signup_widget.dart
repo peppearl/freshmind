@@ -77,7 +77,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           const SizedBox(height: 20),
           Button(
               backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
               title: "M'inscrire",
               elevation: 2,
               onPressed: signUp),

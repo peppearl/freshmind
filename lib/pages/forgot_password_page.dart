@@ -60,7 +60,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 const SizedBox(height: 20),
                 Button(
                     backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
                     title: "Réinitialiser le mot de passe",
                     elevation: 2,
                     onPressed: resetPassword)

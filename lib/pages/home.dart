@@ -23,6 +23,7 @@ class _HomeState extends State<Home> {
             style: const TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.white,
+          elevation: 0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(32),
@@ -34,7 +35,6 @@ class _HomeState extends State<Home> {
               Text(user.email!),
               Button(
                   backgroundColor: const Color(0xFF73BBB3),
-                  foregroundColor: Colors.white,
                   title: "Se déconnecter",
                   elevation: 0,
                   onPressed: () => FirebaseAuth.instance.signOut())

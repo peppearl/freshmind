@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:freshmind/pages/auth_page.dart';
 import 'package:freshmind/pages/home.dart';
+import 'package:freshmind/pages/verify_email_page.dart';
 import 'package:freshmind/utils.dart';
 
 Future main() async {
@@ -45,9 +46,7 @@ class MyHomePage extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return const Center(child: Text("Une erreur s'est produite"));
               } else if (snapshot.hasData) {
-                return const Home(
-                  title: 'Accueil',
-                );
+                return const VerifyEmailPage();
               } else {
                 return const AuthPage();
               }

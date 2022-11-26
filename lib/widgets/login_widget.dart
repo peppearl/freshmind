@@ -65,7 +65,6 @@ class _LogInWidgetState extends State<LogInWidget> {
           const SizedBox(height: 20),
           Button(
               backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
               title: "Me connecter",
               elevation: 2,
               onPressed: signIn),

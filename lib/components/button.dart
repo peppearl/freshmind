@@ -4,14 +4,12 @@ class Button extends StatelessWidget {
   const Button(
       {Key? key,
       required this.backgroundColor,
-      required this.foregroundColor,
       required this.title,
       required this.elevation,
       required this.onPressed})
       : super(key: key);
 
   final Color backgroundColor;
-  final Color foregroundColor;
   final String title;
   final double elevation;
   final VoidCallback onPressed;
@@ -23,7 +21,6 @@ class Button extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
           elevation: elevation,
         ),
         onPressed: onPressed,
