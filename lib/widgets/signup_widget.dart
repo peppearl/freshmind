@@ -18,12 +18,16 @@ class SignUpWidget extends StatefulWidget {
 class _SignUpWidgetState extends State<SignUpWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  late bool passwordVisibility = false;
+  late bool confirmPasswordVisibility = false;
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
 
     super.dispose();
   }
@@ -64,15 +68,64 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             controller: passwordController,
             cursorColor: Colors.white,
             textInputAction: TextInputAction.done,
-            decoration: const InputDecoration(
-                labelText: "Mot de passe",
-                focusColor: Colors.white,
-                fillColor: Colors.white),
-            obscureText: true,
+            decoration: InputDecoration(
+              labelText: "Mot de passe",
+              focusColor: Colors.white,
+              fillColor: Colors.white,
+              suffixIcon: InkWell(
+                onTap: () => setState(
+                  () => passwordVisibility = !passwordVisibility,
+                ),
+                focusNode: FocusNode(skipTraversal: true),
+                child: Icon(
+                  passwordVisibility
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: const Color.fromARGB(255, 84, 84, 84),
+                  size: 22,
+                ),
+              ),
+            ),
+            obscureText: !passwordVisibility,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) => value != null && value.length < 6
                 ? "Le mot de passe doit comporter au moins six caractères"
                 : null,
+          ),
+          const SizedBox(height: 4),
+          TextFormField(
+            controller: confirmPasswordController,
+            cursorColor: Colors.white,
+            textInputAction: TextInputAction.done,
+            decoration: InputDecoration(
+              labelText: "Confirmer le mot de passe",
+              focusColor: Colors.white,
+              fillColor: Colors.white,
+              suffixIcon: InkWell(
+                onTap: () => setState(
+                  () => confirmPasswordVisibility = !confirmPasswordVisibility,
+                ),
+                focusNode: FocusNode(skipTraversal: true),
+                child: Icon(
+                  confirmPasswordVisibility
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: const Color.fromARGB(255, 84, 84, 84),
+                  size: 22,
+                ),
+              ),
+            ),
+            obscureText: !confirmPasswordVisibility,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) {
+              if (value != null && value.length < 6) {
+                return "Le mot de passe doit comporter au moins six caractères";
+              } else if (value != passwordController.text) {
+                return "Mots de passe différents";
+              } else {
+                return null;
+              }
+            },
           ),
           const SizedBox(height: 20),
           Button(
