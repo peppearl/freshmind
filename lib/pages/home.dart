@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freshmind/pages/functionnalities_page.dart';
 import 'package:freshmind/pages/profile.dart';
-import 'package:freshmind/widgets/scroll_list_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -83,6 +82,8 @@ class _HomeState extends State<Home> {
                       ? const Color.fromARGB(255, 101, 101, 101)
                       : const Color.fromARGB(255, 169, 169, 169),
                 ),
+                //if text under icons
+                /*
                 const SizedBox(
                   height: 3,
                 ),
@@ -90,7 +91,7 @@ class _HomeState extends State<Home> {
                     style: TextStyle(
                         color: pageIndex == index
                             ? const Color.fromARGB(255, 101, 101, 101)
-                            : const Color.fromARGB(255, 169, 169, 169)))
+                            : const Color.fromARGB(255, 169, 169, 169)))*/
               ],
             ),
           );

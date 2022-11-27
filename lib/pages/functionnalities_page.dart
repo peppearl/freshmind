@@ -30,9 +30,21 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
               ],
             ),
             child: const Text(
-              "FONCTIONNALITES",
+              "FONCTIONNALITÉS",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(
+                height: 2,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                shadows: [
+                  Shadow(color: Color(0xFF899393), offset: Offset(0, -5))
+                ],
+                color: Colors.transparent,
+                decoration: TextDecoration.underline,
+                decorationColor: Color(0xFF73BBB3),
+                decorationThickness: 2,
+                decorationStyle: TextDecorationStyle.solid,
+              ),
             ),
           ),
           Expanded(
