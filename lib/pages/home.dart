@@ -1,5 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:freshmind/pages/functionnalities_page.dart';
+import 'package:freshmind/pages/profile.dart';
 import 'package:freshmind/widgets/scroll_list_widget.dart';
 
 class Home extends StatefulWidget {
@@ -12,32 +13,43 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int pageIndex = 0;
+  int pageIndex = 1;
+
+  List iconItems = [
+    Icons.person_rounded,
+    Icons.home_rounded,
+    Icons.groups_rounded,
+  ];
+  List textItems = ["Profil", "Fonctionnalités", "Groupe"];
+
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: getAppBar(),
       ),
       body: getBody(),
       bottomNavigationBar: bottomAppBar(),
     );
   }
 
+  Widget getAppBar() {
+    return AppBar(elevation: 0, backgroundColor: Colors.white, actions: [
+      IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.search_rounded),
+        color: const Color.fromARGB(255, 101, 101, 101),
+      ),
+      IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.notifications_none_rounded),
+        color: const Color.fromARGB(255, 101, 101, 101),
+      ),
+    ]);
+  }
+
   Widget bottomAppBar() {
-    List iconItems = [
-      Icons.person_rounded,
-      Icons.home_rounded,
-      Icons.groups_rounded,
-    ];
-    List textItems = ["Profil", "Fonctionnalités", "Groupe"];
     return Container(
       height: 60,
       width: double.infinity,
@@ -91,10 +103,8 @@ class _HomeState extends State<Home> {
     return IndexedStack(
       index: pageIndex,
       children: const [
-        Center(
-          child: Text("Profil"),
-        ),
-        ScrollListWidget(),
+        Profile(title: "Profil"),
+        FunctionnalitiesPage(),
         Center(
           child: Text("Groupe"),
         ),
