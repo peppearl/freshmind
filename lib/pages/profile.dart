@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/components/button.dart';
+import 'package:freshmind/components/button_green_text.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key, required this.title}) : super(key: key);
@@ -24,7 +24,7 @@ class _ProfileState extends State<Profile> {
           const Text("Connecté en tant que "),
           const SizedBox(height: 8),
           Text(user.email!),
-          Button(
+          ButtonGreenText(
               backgroundColor: const Color(0xFF73BBB3),
               title: "Se déconnecter",
               elevation: 0,

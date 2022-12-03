@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freshmind/pages/auth_page.dart';
 import 'package:freshmind/pages/verify_email_page.dart';
 import 'package:freshmind/utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData().copyWith(
+        textTheme: GoogleFonts.poppinsTextTheme(),
+      ),
       scaffoldMessengerKey: Utils.messengerKey,
       navigatorKey: navigatorKey,
       title: 'FreshMind',

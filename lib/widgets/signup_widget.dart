@@ -2,9 +2,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/components/button.dart';
+import 'package:freshmind/components/button_green_text.dart';
 import 'package:freshmind/main.dart';
 import 'package:freshmind/utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignUpWidget extends StatefulWidget {
   final VoidCallback onClickedSignIn;
@@ -41,6 +42,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           const SizedBox(
             height: 40,
           ),
+          Text("FRESHMIND",
+              style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900)),
+          const SizedBox(
+            height: 40,
+          ),
           const Text("S'identifier",
               style: TextStyle(
                   color: Colors.white,
@@ -51,27 +60,44 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           ),
           TextFormField(
             controller: emailController,
-            cursorColor: Colors.white,
+            cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
-            decoration: const InputDecoration(
-                labelText: "Email",
-                focusColor: Colors.white,
-                fillColor: Colors.white),
+            decoration: InputDecoration(
+              labelText: "Email",
+              focusColor: Colors.white,
+              fillColor: const Color.fromARGB(127, 235, 252, 250),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
+            ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (email) =>
                 email != null && !EmailValidator.validate(email)
                     ? "Veuillez indiquer une adresse e-mail valide"
                     : null,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 18),
           TextFormField(
             controller: passwordController,
-            cursorColor: Colors.white,
+            cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               labelText: "Mot de passe",
               focusColor: Colors.white,
-              fillColor: Colors.white,
+              fillColor: const Color.fromARGB(127, 235, 252, 250),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
               suffixIcon: InkWell(
                 onTap: () => setState(
                   () => passwordVisibility = !passwordVisibility,
@@ -92,15 +118,23 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ? "Le mot de passe doit comporter au moins six caractères"
                 : null,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 18),
           TextFormField(
             controller: confirmPasswordController,
-            cursorColor: Colors.white,
+            cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               labelText: "Confirmer le mot de passe",
               focusColor: Colors.white,
-              fillColor: Colors.white,
+              fillColor: const Color.fromARGB(127, 235, 252, 250),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
               suffixIcon: InkWell(
                 onTap: () => setState(
                   () => confirmPasswordVisibility = !confirmPasswordVisibility,
@@ -128,7 +162,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             },
           ),
           const SizedBox(height: 20),
-          Button(
+          ButtonGreenText(
               backgroundColor: Colors.white,
               title: "M'inscrire",
               elevation: 2,

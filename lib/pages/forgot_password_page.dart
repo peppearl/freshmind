@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/components/button.dart';
+import 'package:freshmind/components/button_green_text.dart';
 import 'package:freshmind/utils.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -48,8 +48,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   controller: emailController,
                   cursorColor: Colors.white,
                   textInputAction: TextInputAction.done,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Email",
+                    fillColor: const Color.fromARGB(127, 235, 252, 250),
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      borderSide: const BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
+                    ),
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (email) =>
@@ -58,7 +67,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           : null,
                 ),
                 const SizedBox(height: 20),
-                Button(
+                ButtonGreenText(
                     backgroundColor: Colors.white,
                     title: "Réinitialiser le mot de passe",
                     elevation: 2,

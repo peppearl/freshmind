@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/components/button.dart';
+import 'package:freshmind/components/button_green_text.dart';
 import 'package:freshmind/pages/home.dart';
 import 'package:freshmind/utils.dart';
 
@@ -93,7 +93,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                Button(
+                ButtonGreenText(
                     backgroundColor: Colors.white,
                     title: "Renvoyer l'email",
                     elevation: 2,

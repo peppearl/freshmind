@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/components/button.dart';
+import 'package:freshmind/components/button_green_text.dart';
 import 'package:freshmind/main.dart';
 import 'package:freshmind/pages/forgot_password_page.dart';
 import 'package:freshmind/utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LogInWidget extends StatefulWidget {
   const LogInWidget({super.key, required this.onClickedSignUp});
@@ -34,6 +35,14 @@ class _LogInWidgetState extends State<LogInWidget> {
           const SizedBox(
             height: 40,
           ),
+          Text("FRESHMIND",
+              style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900)),
+          const SizedBox(
+            height: 40,
+          ),
           const Text("Connexion",
               style: TextStyle(
                   color: Colors.white,
@@ -44,28 +53,46 @@ class _LogInWidgetState extends State<LogInWidget> {
           ),
           TextField(
             controller: emailController,
-            cursorColor: Colors.white,
+            cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
-            decoration: const InputDecoration(
-                labelText: "Email",
-                focusColor: Colors.white,
-                fillColor: Colors.white),
+            decoration: InputDecoration(
+              labelText: "Email",
+              focusColor: Colors.white,
+              fillColor: const Color.fromARGB(127, 235, 252, 250),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
+            ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 18),
           TextField(
             controller: passwordController,
-            cursorColor: Colors.white,
+            cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
-            decoration: const InputDecoration(
-                labelText: "Mot de passe",
-                focusColor: Colors.white,
-                fillColor: Colors.white),
+            decoration: InputDecoration(
+              labelText: "Mot de passe",
+              focusColor: Colors.white,
+              fillColor: const Color.fromARGB(127, 235, 252, 250),
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
+            ),
             obscureText: true,
           ),
           const SizedBox(height: 20),
-          Button(
+          ButtonGreenText(
               backgroundColor: Colors.white,
-              title: "Me connecter",
+              title: "Je me connecte",
               elevation: 2,
               onPressed: signIn),
           const SizedBox(height: 24),
@@ -107,8 +134,6 @@ class _LogInWidgetState extends State<LogInWidget> {
           email: emailController.text.trim(),
           password: passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
-      print(e);
-
       Utils.showSnackBar(e.message);
     }
 

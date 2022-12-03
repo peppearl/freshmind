@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Button extends StatelessWidget {
-  const Button(
+class ButtonGreenText extends StatelessWidget {
+  const ButtonGreenText(
       {Key? key,
       required this.backgroundColor,
       required this.title,
@@ -22,6 +22,8 @@ class Button extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           elevation: elevation,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         ),
         onPressed: onPressed,
         child: MaterialButton(
@@ -30,7 +32,10 @@ class Button extends StatelessWidget {
           height: 42.0,
           child: Text(
             title,
-            style: const TextStyle(fontSize: 20),
+            style: const TextStyle(
+                fontSize: 18,
+                color: Color(0xFF73BBB3),
+                fontWeight: FontWeight.w700),
           ),
         ),
       ),
