@@ -57,6 +57,9 @@ class _LogInWidgetState extends State<LogInWidget> {
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               labelText: "Email",
+              labelStyle: const TextStyle(
+                color: Color(0xFF8B8B8B),
+              ),
               focusColor: Colors.white,
               fillColor: const Color.fromARGB(127, 235, 252, 250),
               filled: true,
@@ -76,6 +79,9 @@ class _LogInWidgetState extends State<LogInWidget> {
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               labelText: "Mot de passe",
+              labelStyle: const TextStyle(
+                color: Color(0xFF8B8B8B),
+              ),
               focusColor: Colors.white,
               fillColor: const Color.fromARGB(127, 235, 252, 250),
               filled: true,

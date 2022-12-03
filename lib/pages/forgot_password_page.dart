@@ -29,7 +29,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Réinitialiser le mot de passe'),
+        //title: const Text('Réinitialiser le mot de passe'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -46,10 +46,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: emailController,
-                  cursorColor: Colors.white,
+                  cursorColor: const Color(0xFF8B8B8B),
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     labelText: "Email",
+                    labelStyle: const TextStyle(
+                      color: Color(0xFF8B8B8B),
+                    ),
                     fillColor: const Color.fromARGB(127, 235, 252, 250),
                     filled: true,
                     border: OutlineInputBorder(
