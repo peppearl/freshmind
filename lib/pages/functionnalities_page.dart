@@ -52,7 +52,7 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: ListView(children: [
                 Container(
-                  margin: const EdgeInsets.only(top: 15),
+                  margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
                   child: StaggeredGrid.count(
                     crossAxisCount: 4,
                     mainAxisSpacing: 15,
