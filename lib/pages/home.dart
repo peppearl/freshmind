@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freshmind/components/get_app_bar.dart';
 import 'package:freshmind/pages/functionnalities_page.dart';
 import 'package:freshmind/pages/profile.dart';
 
@@ -24,28 +25,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: getAppBar(),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: GetAppBar(),
       ),
       body: getBody(),
       bottomNavigationBar: bottomAppBar(),
     );
-  }
-
-  Widget getAppBar() {
-    return AppBar(elevation: 0, backgroundColor: Colors.white, actions: [
-      IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.search_rounded),
-        color: const Color.fromARGB(255, 101, 101, 101),
-      ),
-      IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.notifications_none_rounded),
-        color: const Color.fromARGB(255, 101, 101, 101),
-      ),
-    ]);
   }
 
   Widget bottomAppBar() {

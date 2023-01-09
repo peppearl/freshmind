@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:freshmind/components/app_bar_title.dart';
+import 'package:freshmind/pages/calendar.dart';
 
 class FunctionnalitiesPage extends StatefulWidget {
   const FunctionnalitiesPage({super.key});
@@ -15,37 +17,8 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.only(bottom: 5),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: const Text(
-              "FONCTIONNALITÉS",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                height: 2,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                shadows: [
-                  Shadow(color: Color(0xFF899393), offset: Offset(0, -5))
-                ],
-                color: Colors.transparent,
-                decoration: TextDecoration.underline,
-                decorationColor: Color(0xFF73BBB3),
-                decorationThickness: 2,
-                decorationStyle: TextDecorationStyle.solid,
-              ),
-            ),
+          const AppBarTitle(
+            title: 'FONCTIONNALITES',
           ),
           Expanded(
             child: Padding(
@@ -69,7 +42,13 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                     foregroundColor: Colors.white,
                                     padding: const EdgeInsets.fromLTRB(
                                         50, 30, 50, 30)),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Calendar()),
+                                  );
+                                },
                                 child: Center(
                                   child: Column(
                                     children: const <Widget>[
