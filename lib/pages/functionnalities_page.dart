@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/pages/calendar.dart';
+import 'package:get/get.dart';
 
 class FunctionnalitiesPage extends StatefulWidget {
   const FunctionnalitiesPage({super.key});
@@ -42,13 +43,7 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                     foregroundColor: Colors.white,
                                     padding: const EdgeInsets.fromLTRB(
                                         50, 30, 50, 30)),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const Calendar()),
-                                  );
-                                },
+                                onPressed: () => Get.to(() => const Calendar()),
                                 child: Center(
                                   child: Column(
                                     children: const <Widget>[

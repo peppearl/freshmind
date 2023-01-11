@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freshmind/pages/auth_page.dart';
 import 'package:freshmind/pages/verify_email_page.dart';
 import 'package:freshmind/utils.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future main() async {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: ThemeData().copyWith(
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
