@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/get_app_bar.dart';
 import 'package:freshmind/pages/add_event.dart';
@@ -57,10 +58,38 @@ class _CalendarState extends State<Calendar> {
           _addDateBar(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () => Get.to(() => const AddEvent()),
-          child: const Icon(Icons.add, color: Colors.grey)),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        spacing: 3,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.grey,
+        closeManually: false,
+        curve: Curves.bounceIn,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.8,
+        children: [
+          SpeedDialChild(
+              //speed dial child
+              child: const Icon(Icons.accessibility),
+              backgroundColor: const Color(0xFF73BBB3),
+              foregroundColor: Colors.white,
+              label: 'Evènement',
+              labelBackgroundColor: Colors.transparent,
+              labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
+              onTap: () => Get.to(() => const AddEvent()),
+              labelShadow: [const BoxShadow(color: Colors.transparent)]),
+          SpeedDialChild(
+              child: const Icon(Icons.brush),
+              backgroundColor: const Color.fromARGB(255, 185, 124, 123),
+              foregroundColor: Colors.white,
+              labelBackgroundColor: Colors.transparent,
+              label: 'Tâches',
+              labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
+              onTap: () => print('Tâches'),
+              labelShadow: [const BoxShadow(color: Colors.transparent)]),
+        ],
+      ),
     );
   }
 

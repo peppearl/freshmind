@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MyInputField extends StatelessWidget {
+class InputFieldIcon extends StatelessWidget {
   final String title;
   final String hint;
   final Color textColor;
   final TextEditingController? controller;
   final Widget? widget;
 
-  const MyInputField(
+  const InputFieldIcon(
       {super.key,
       required this.title,
       required this.hint,
@@ -33,6 +33,10 @@ class MyInputField extends StatelessWidget {
             cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
+              icon: const Icon(
+                Icons.person_add_outlined,
+                color: Color(0xFF73BBB3),
+              ),
               labelText: hint,
               labelStyle: const TextStyle(
                 color: Color(0xFF8B8B8B),
