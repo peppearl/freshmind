@@ -4,6 +4,7 @@ class InputFieldIcon extends StatelessWidget {
   final String title;
   final String hint;
   final Color textColor;
+  final Color iconColor;
   final TextEditingController? controller;
   final Widget? widget;
 
@@ -12,6 +13,7 @@ class InputFieldIcon extends StatelessWidget {
       required this.title,
       required this.hint,
       required this.textColor,
+      required this.iconColor,
       this.controller,
       this.widget});
 
@@ -33,9 +35,9 @@ class InputFieldIcon extends StatelessWidget {
             cursorColor: const Color(0xFF8B8B8B),
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
-              icon: const Icon(
+              icon: Icon(
                 Icons.person_add_outlined,
-                color: Color(0xFF73BBB3),
+                color: iconColor,
               ),
               labelText: hint,
               labelStyle: const TextStyle(

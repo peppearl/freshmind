@@ -22,6 +22,9 @@ class ButtonWhiteText extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           elevation: elevation,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100),
+          ),
         ),
         onPressed: onPressed,
         child: MaterialButton(
@@ -30,7 +33,7 @@ class ButtonWhiteText extends StatelessWidget {
           height: 42.0,
           child: Text(
             title,
-            style: const TextStyle(fontSize: 20, color: Colors.white),
+            style: const TextStyle(fontSize: 16, color: Colors.white),
           ),
         ),
       ),

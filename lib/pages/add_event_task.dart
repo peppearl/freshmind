@@ -4,16 +4,16 @@ import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
 import 'package:freshmind/utils.dart';
 
-class AddEvent extends StatefulWidget {
+class AddEventTask extends StatefulWidget {
   final DateTime selectedDate;
 
-  const AddEvent({Key? key, required this.selectedDate}) : super(key: key);
+  const AddEventTask({Key? key, required this.selectedDate}) : super(key: key);
 
   @override
-  State<AddEvent> createState() => _AddEventState();
+  State<AddEventTask> createState() => _AddEventTaskState();
 }
 
-class _AddEventState extends State<AddEvent> {
+class _AddEventTaskState extends State<AddEventTask> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final addPersonsController = TextEditingController();
@@ -66,24 +66,24 @@ class _AddEventState extends State<AddEvent> {
               children: [
                 MyInputField(
                   controller: titleController,
-                  title: "Nom de l'évènement",
-                  hint: "Nom de l'évènement",
-                  textColor: const Color(0xFF73BBB3),
+                  title: "Nom de la tâche",
+                  hint: "Nom de la tâche",
+                  textColor: const Color.fromARGB(255, 185, 124, 123),
                 ),
                 const SizedBox(height: 20),
                 buildDateTimePickers(),
                 const SizedBox(height: 20),
                 InputFieldIcon(
-                    iconColor: const Color(0xFF73BBB3),
+                    iconColor: const Color.fromARGB(255, 185, 124, 123),
                     controller: addPersonsController,
-                    title: "Ajouter des personnes à l'évènement",
+                    title: "Ajouter des personnes à la tâche",
                     hint: "Invite une personne",
-                    textColor: const Color(0xFF73BBB3)),
+                    textColor: const Color.fromARGB(255, 185, 124, 123)),
                 const SizedBox(height: 20),
                 Center(
                   child: ButtonWhiteText(
-                      backgroundColor: const Color(0xFF73BBB3),
-                      title: "Ajouter l'évènement",
+                      backgroundColor: const Color.fromARGB(255, 185, 124, 123),
+                      title: "Ajouter la tâche",
                       elevation: 0,
                       onPressed: () => {}),
                 )
@@ -112,7 +112,7 @@ class _AddEventState extends State<AddEvent> {
               children: [
                 const Text(
                   "de",
-                  style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
+                  style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
                 TextFormField(
                   controller: fromDateController,
@@ -191,7 +191,7 @@ class _AddEventState extends State<AddEvent> {
               children: [
                 const Text(
                   "à",
-                  style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
+                  style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
                 TextFormField(
                   controller: endDateController,
@@ -347,7 +347,7 @@ class _AddEventState extends State<AddEvent> {
 
         Navigator.of(context).pop();
       } else {
-        provider.addEvent(event);
+        provider.addEventTask(event);
       }
 
       Navigator.of(context).pop();

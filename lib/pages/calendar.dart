@@ -5,6 +5,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/get_app_bar.dart';
 import 'package:freshmind/pages/add_event.dart';
+import 'package:freshmind/pages/add_event_task.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class _CalendarState extends State<Calendar> {
   late DateFormat timeFormat;
 
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime _selectedDay = DateTime.now();
 
   @override
   void initState() {
@@ -51,12 +52,14 @@ class _CalendarState extends State<Calendar> {
         preferredSize: Size.fromHeight(60),
         child: GetAppBar(),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const AppBarTitle(title: "MON PLANNING"),
-          _addDateBar(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AppBarTitle(title: "MON PLANNING"),
+            _addDateBar(),
+          ],
+        ),
       ),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
@@ -77,7 +80,7 @@ class _CalendarState extends State<Calendar> {
               label: 'Evènement',
               labelBackgroundColor: Colors.transparent,
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-              onTap: () => Get.to(() => const AddEvent()),
+              onTap: () => showModalEvent(),
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
           SpeedDialChild(
               child: const Icon(Icons.brush),
@@ -86,7 +89,7 @@ class _CalendarState extends State<Calendar> {
               labelBackgroundColor: Colors.transparent,
               label: 'Tâches',
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-              onTap: () => print('Tâches'),
+              onTap: () => showModalTask(),
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
         ],
       ),
@@ -153,4 +156,24 @@ class _CalendarState extends State<Calendar> {
       ),
     );
   }
+
+  showModalEvent() => showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            elevation: 16,
+            child: AddEvent(selectedDate: _selectedDay));
+      });
+
+  showModalTask() => showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            elevation: 16,
+            child: AddEventTask(selectedDate: _selectedDay));
+      });
 }
