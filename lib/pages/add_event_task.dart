@@ -65,6 +65,7 @@ class _AddEventTaskState extends State<AddEventTask> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MyInputField(
+                  fieldName: "title",
                   controller: titleController,
                   title: "Nom de la tâche",
                   hint: "Nom de la tâche",
@@ -74,6 +75,7 @@ class _AddEventTaskState extends State<AddEventTask> {
                 buildDateTimePickers(),
                 const SizedBox(height: 20),
                 InputFieldIcon(
+                    fieldName: "add_person",
                     iconColor: const Color.fromARGB(255, 185, 124, 123),
                     controller: addPersonsController,
                     title: "Ajouter des personnes à la tâche",

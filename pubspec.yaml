@@ -53,6 +53,8 @@ dependencies:
   table_calendar: ^3.0.8
   shared_preferences: ^2.0.15
   flutter_speed_dial: ^6.2.0
+  firebase_helpers: ^0.6.0
+  flutter_form_builder: ^7.7.0
 
 dev_dependencies:
   flutter_test:

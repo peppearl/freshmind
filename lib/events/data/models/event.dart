@@ -3,28 +3,32 @@ import 'dart:convert';
 class Event {
   final String title;
   final String id;
-  final DateTime date;
+  final DateTime fromDate;
+  final DateTime toDate;
   final String userId;
   final String addedUsers;
 
   Event(
       {required this.title,
       required this.id,
-      required this.date,
+      required this.fromDate,
+      required this.toDate,
       required this.userId,
       required this.addedUsers});
 
   Event copyWith({
     required String title,
     required String id,
-    required DateTime date,
+    required DateTime fromDate,
+    required DateTime toDate,
     required String userId,
     required String addedUsers,
   }) {
     return Event(
       title: title,
       id: id,
-      date: date,
+      fromDate: fromDate,
+      toDate: toDate,
       userId: userId,
       addedUsers: addedUsers,
     );
@@ -34,7 +38,8 @@ class Event {
     return {
       'title': title,
       'id': id,
-      'date': date.millisecondsSinceEpoch,
+      'fromDate': fromDate.millisecondsSinceEpoch,
+      'toDate': toDate.millisecondsSinceEpoch,
       'userId': userId,
       'addedUsers': addedUsers,
     };
@@ -44,17 +49,19 @@ class Event {
     return Event(
       title: map['title'],
       id: map['id'],
-      date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+      fromDate: DateTime.fromMillisecondsSinceEpoch(map['fromDate']),
+      toDate: DateTime.fromMillisecondsSinceEpoch(map['toDate']),
       userId: map['userId'],
       addedUsers: map['addedUsers'],
     );
   }
-  factory Event.fromDS(String id, Map<String, dynamic> data) {
+  factory Event.fromDS(String id, Map<String, dynamic>? data) {
     return Event(
-      title: data['title'],
+      title: data!['title'],
       id: id,
       addedUsers: data['addedUsers'],
-      date: DateTime.fromMillisecondsSinceEpoch(data['date']),
+      fromDate: DateTime.fromMillisecondsSinceEpoch(data['fromDate']),
+      toDate: DateTime.fromMillisecondsSinceEpoch(data['toDate']),
       userId: data['user_id'],
     );
   }
@@ -65,7 +72,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event(title: $title, id: $id, addedUsers: $addedUsers, date: $date, userId: $userId)';
+    return 'Event(title: $title, id: $id, addedUsers: $addedUsers, fromDate: $fromDate, toDate: $toDate, userId: $userId)';
   }
 
   @override
@@ -76,7 +83,8 @@ class Event {
         o.title == title &&
         o.id == id &&
         o.addedUsers == addedUsers &&
-        o.date == date &&
+        o.fromDate == fromDate &&
+        o.toDate == toDate &&
         o.userId == userId;
   }
 
@@ -85,7 +93,8 @@ class Event {
     return title.hashCode ^
         id.hashCode ^
         addedUsers.hashCode ^
-        date.hashCode ^
+        fromDate.hashCode ^
+        toDate.hashCode ^
         userId.hashCode;
   }
 }

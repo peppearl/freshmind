@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
+import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/utils.dart';
+import 'package:get/get.dart';
 
 class AddEvent extends StatefulWidget {
   final DateTime selectedDate;
@@ -14,7 +17,7 @@ class AddEvent extends StatefulWidget {
 }
 
 class _AddEventState extends State<AddEvent> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   final titleController = TextEditingController();
   final addPersonsController = TextEditingController();
 
@@ -59,21 +62,29 @@ class _AddEventState extends State<AddEvent> {
       height: 580,
       child: ListView(
         children: [
-          Form(
+          FormBuilder(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MyInputField(
+                  fieldName: "title",
                   controller: titleController,
                   title: "Nom de l'évènement",
                   hint: "Nom de l'évènement",
                   textColor: const Color(0xFF73BBB3),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Champ vide";
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 buildDateTimePickers(),
                 const SizedBox(height: 20),
                 InputFieldIcon(
+                    fieldName: "add_person",
                     iconColor: const Color(0xFF73BBB3),
                     controller: addPersonsController,
                     title: "Ajouter des personnes à l'évènement",
@@ -85,7 +96,7 @@ class _AddEventState extends State<AddEvent> {
                       backgroundColor: const Color(0xFF73BBB3),
                       title: "Ajouter l'évènement",
                       elevation: 0,
-                      onPressed: () => {}),
+                      onPressed: () => saveForm()),
                 )
               ],
             ),
@@ -114,7 +125,8 @@ class _AddEventState extends State<AddEvent> {
                   "de",
                   style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "fromDate",
                   controller: fromDateController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -150,7 +162,8 @@ class _AddEventState extends State<AddEvent> {
                   "",
                   style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "fromTime",
                   controller: beginTimeController,
                   readOnly: true,
                   decoration: const InputDecoration(
@@ -193,7 +206,8 @@ class _AddEventState extends State<AddEvent> {
                   "à",
                   style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "toDate",
                   controller: endDateController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -227,7 +241,8 @@ class _AddEventState extends State<AddEvent> {
                   "",
                   style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "toTime",
                   controller: endTimeController,
                   readOnly: true,
                   decoration: const InputDecoration(
@@ -326,19 +341,25 @@ class _AddEventState extends State<AddEvent> {
       return date.add(time);
     }
   }
-/*
+
   Future saveForm() async {
     final isValid = _formKey.currentState!.validate();
+    if (addPersonsController.text.isEmpty) {
+      addPersonsController.text = "";
+    }
 
     if (isValid) {
-      final event = Event(
-          title: titleController.text,
-          invitee: "",
-          location: "Lyon",
-          from: fromDate,
-          to: toDate,
-          isAllDay: false);
+      final data = Map<String, dynamic>.from(_formKey.currentState!.value);
 
+      data['title'] = titleController.text;
+      data['fromDate'] = fromDate;
+      data['toDate'] = toDate;
+      data['addedUsers'] = addPersonsController.text;
+
+      await eventDBS.create(data);
+      Get.back();
+
+/*
       final isEditing = widget.event != null;
       final provider = Provider.of<EventProvider>(context, listen: false);
 
@@ -351,7 +372,7 @@ class _AddEventState extends State<AddEvent> {
       }
 
       Navigator.of(context).pop();
+      */
     }
   }
-  */
 }
