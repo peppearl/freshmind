@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/get_app_bar.dart';
+import 'package:freshmind/events/data/models/event.dart';
+import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:freshmind/pages/add_event_task.dart';
 import 'package:intl/intl.dart';
@@ -58,6 +60,23 @@ class _CalendarState extends State<Calendar> {
           children: [
             const AppBarTitle(title: "MON PLANNING"),
             _addDateBar(),
+            StreamBuilder(
+              stream: eventDBS.streamList(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  final events = snapshot.data;
+                  ListView.builder(
+                      itemCount: events.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Event event = events[index];
+                        return ListTile(
+                          title: Text(events.title),
+                        );
+                      });
+                }
+                return const Text("");
+              },
+            )
           ],
         ),
       ),
@@ -109,7 +128,6 @@ class _CalendarState extends State<Calendar> {
             firstDay: DateTime.utc(2022, 10, 1),
             lastDay: DateTime.utc(2024, 12, 31),
             locale: 'fr',
-            //onDaySelected: _onDaySelected,
             calendarStyle: const CalendarStyle(
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(

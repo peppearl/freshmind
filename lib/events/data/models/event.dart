@@ -7,6 +7,7 @@ class Event {
   final DateTime toDate;
   final String userId;
   final String addedUsers;
+  final int color;
 
   Event(
       {required this.title,
@@ -14,7 +15,8 @@ class Event {
       required this.fromDate,
       required this.toDate,
       required this.userId,
-      required this.addedUsers});
+      required this.addedUsers,
+      required this.color});
 
   Event copyWith({
     required String title,
@@ -23,6 +25,7 @@ class Event {
     required DateTime toDate,
     required String userId,
     required String addedUsers,
+    required int color,
   }) {
     return Event(
       title: title,
@@ -31,6 +34,7 @@ class Event {
       toDate: toDate,
       userId: userId,
       addedUsers: addedUsers,
+      color: color,
     );
   }
 
@@ -42,6 +46,7 @@ class Event {
       'toDate': toDate.millisecondsSinceEpoch,
       'userId': userId,
       'addedUsers': addedUsers,
+      'color': color,
     };
   }
 
@@ -53,6 +58,7 @@ class Event {
       toDate: DateTime.fromMillisecondsSinceEpoch(map['toDate']),
       userId: map['userId'],
       addedUsers: map['addedUsers'],
+      color: map['color'],
     );
   }
   factory Event.fromDS(String id, Map<String, dynamic>? data) {
@@ -63,6 +69,7 @@ class Event {
       fromDate: DateTime.fromMillisecondsSinceEpoch(data['fromDate']),
       toDate: DateTime.fromMillisecondsSinceEpoch(data['toDate']),
       userId: data['user_id'],
+      color: data['color'],
     );
   }
 
@@ -72,7 +79,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event(title: $title, id: $id, addedUsers: $addedUsers, fromDate: $fromDate, toDate: $toDate, userId: $userId)';
+    return 'Event(title: $title, id: $id, addedUsers: $addedUsers, fromDate: $fromDate, toDate: $toDate, userId: $userId, color: $color)';
   }
 
   @override
@@ -85,6 +92,7 @@ class Event {
         o.addedUsers == addedUsers &&
         o.fromDate == fromDate &&
         o.toDate == toDate &&
+        o.color == color &&
         o.userId == userId;
   }
 
@@ -95,6 +103,7 @@ class Event {
         addedUsers.hashCode ^
         fromDate.hashCode ^
         toDate.hashCode ^
+        color.hashCode ^
         userId.hashCode;
   }
 }

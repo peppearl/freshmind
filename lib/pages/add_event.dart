@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:freshmind/components/button_white_text.dart';
@@ -30,6 +31,8 @@ class _AddEventState extends State<AddEvent> {
       endDateController = TextEditingController(),
       beginTimeController = TextEditingController(),
       endTimeController = TextEditingController();
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -348,6 +351,10 @@ class _AddEventState extends State<AddEvent> {
       addPersonsController.text = "";
     }
 
+    //get user id of the current user
+    final User? user = auth.currentUser;
+    final userid = user?.uid;
+
     if (isValid) {
       final data = Map<String, dynamic>.from(_formKey.currentState!.value);
 
@@ -355,24 +362,11 @@ class _AddEventState extends State<AddEvent> {
       data['fromDate'] = fromDate;
       data['toDate'] = toDate;
       data['addedUsers'] = addPersonsController.text;
+      data['user_id'] = userid.toString();
+      data['color'] = 0xFF73BBB3;
 
       await eventDBS.create(data);
       Get.back();
-
-/*
-      final isEditing = widget.event != null;
-      final provider = Provider.of<EventProvider>(context, listen: false);
-
-      if (isEditing) {
-        provider.editEvent(event, widget.event!);
-
-        Navigator.of(context).pop();
-      } else {
-        provider.addEvent(event);
-      }
-
-      Navigator.of(context).pop();
-      */
     }
   }
 }

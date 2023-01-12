@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
+import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/utils.dart';
+import 'package:get/get.dart';
 
 class AddEventTask extends StatefulWidget {
   final DateTime selectedDate;
@@ -14,7 +18,7 @@ class AddEventTask extends StatefulWidget {
 }
 
 class _AddEventTaskState extends State<AddEventTask> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   final titleController = TextEditingController();
   final addPersonsController = TextEditingController();
 
@@ -27,6 +31,8 @@ class _AddEventTaskState extends State<AddEventTask> {
       endDateController = TextEditingController(),
       beginTimeController = TextEditingController(),
       endTimeController = TextEditingController();
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -59,7 +65,7 @@ class _AddEventTaskState extends State<AddEventTask> {
       height: 580,
       child: ListView(
         children: [
-          Form(
+          FormBuilder(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,25 +75,31 @@ class _AddEventTaskState extends State<AddEventTask> {
                   controller: titleController,
                   title: "Nom de la tâche",
                   hint: "Nom de la tâche",
-                  textColor: const Color.fromARGB(255, 185, 124, 123),
+                  textColor: const Color(0xFFB97C7B),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Champ vide";
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
                 buildDateTimePickers(),
                 const SizedBox(height: 20),
                 InputFieldIcon(
                     fieldName: "add_person",
-                    iconColor: const Color.fromARGB(255, 185, 124, 123),
+                    iconColor: const Color(0xFFB97C7B),
                     controller: addPersonsController,
                     title: "Ajouter des personnes à la tâche",
                     hint: "Invite une personne",
-                    textColor: const Color.fromARGB(255, 185, 124, 123)),
+                    textColor: const Color(0xFFB97C7B)),
                 const SizedBox(height: 20),
                 Center(
                   child: ButtonWhiteText(
-                      backgroundColor: const Color.fromARGB(255, 185, 124, 123),
+                      backgroundColor: const Color(0xFFB97C7B),
                       title: "Ajouter la tâche",
                       elevation: 0,
-                      onPressed: () => {}),
+                      onPressed: () => saveForm()),
                 )
               ],
             ),
@@ -116,7 +128,8 @@ class _AddEventTaskState extends State<AddEventTask> {
                   "de",
                   style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "fromDate",
                   controller: fromDateController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -150,9 +163,10 @@ class _AddEventTaskState extends State<AddEventTask> {
               children: [
                 const Text(
                   "",
-                  style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
+                  style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "fromTime",
                   controller: beginTimeController,
                   readOnly: true,
                   decoration: const InputDecoration(
@@ -195,7 +209,8 @@ class _AddEventTaskState extends State<AddEventTask> {
                   "à",
                   style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "toDate",
                   controller: endDateController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -227,9 +242,10 @@ class _AddEventTaskState extends State<AddEventTask> {
               children: [
                 const Text(
                   "",
-                  style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
+                  style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
-                TextFormField(
+                FormBuilderTextField(
+                  name: "toTime",
                   controller: endTimeController,
                   readOnly: true,
                   decoration: const InputDecoration(
@@ -328,32 +344,29 @@ class _AddEventTaskState extends State<AddEventTask> {
       return date.add(time);
     }
   }
-/*
+
   Future saveForm() async {
     final isValid = _formKey.currentState!.validate();
+    if (addPersonsController.text.isEmpty) {
+      addPersonsController.text = "";
+    }
+
+    //get user id of the current user
+    final User? user = auth.currentUser;
+    final userid = user?.uid;
 
     if (isValid) {
-      final event = Event(
-          title: titleController.text,
-          invitee: "",
-          location: "Lyon",
-          from: fromDate,
-          to: toDate,
-          isAllDay: false);
+      final data = Map<String, dynamic>.from(_formKey.currentState!.value);
 
-      final isEditing = widget.event != null;
-      final provider = Provider.of<EventProvider>(context, listen: false);
+      data['title'] = titleController.text;
+      data['fromDate'] = fromDate;
+      data['toDate'] = toDate;
+      data['addedUsers'] = addPersonsController.text;
+      data['user_id'] = userid.toString();
+      data['color'] = 0xFFB97C7B;
 
-      if (isEditing) {
-        provider.editEvent(event, widget.event!);
-
-        Navigator.of(context).pop();
-      } else {
-        provider.addEventTask(event);
-      }
-
-      Navigator.of(context).pop();
+      await eventDBS.create(data);
+      Get.back();
     }
   }
-  */
 }
