@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:freshmind/pages/auth_page.dart';
+import 'package:freshmind/pages/home.dart';
+import 'package:freshmind/pages/profile.dart';
 import 'package:freshmind/pages/verify_email_page.dart';
 import 'package:freshmind/utils.dart';
 import 'package:get/get.dart';
@@ -31,6 +33,26 @@ class MyApp extends StatelessWidget {
       title: 'FreshMind',
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'FreshMind'),
+      getPages: <GetPage>[
+        GetPage(
+            name: '/accueil',
+            page: () => const Home(
+                  title: 'Accueil',
+                )),
+        GetPage(
+          name: '/recherche',
+          page: () => const Center(
+            child: Text("Recherche"),
+          ),
+        ),
+        GetPage(
+          name: '/notifications',
+          page: () => const Center(
+            child: Text("Notifications"),
+          ),
+        ),
+        GetPage(name: '/profil', page: () => const Profile(title: "Profil")),
+      ],
     );
   }
 }

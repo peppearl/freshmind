@@ -24,8 +24,6 @@ class _AddEventState extends State<AddEvent> {
 
   late DateTime fromDate;
   late DateTime toDate;
-  late DateTime fromTime;
-  late DateTime toTime;
 
   late TextEditingController fromDateController = TextEditingController(),
       endDateController = TextEditingController(),
@@ -40,14 +38,12 @@ class _AddEventState extends State<AddEvent> {
 
     fromDate = widget.selectedDate;
     toDate = fromDate.add(const Duration(hours: 1));
-    fromTime = DateTime.now();
-    toTime = fromTime.add(const Duration(hours: 1));
 
     //initialize date and time to today's date + 1 hour
     fromDateController.text = Utils.toDate(fromDate);
     endDateController.text = Utils.toDate(toDate);
-    beginTimeController.text = Utils.toTime(fromTime);
-    endTimeController.text = Utils.toTime(toTime);
+    beginTimeController.text = Utils.toTime(fromDate);
+    endTimeController.text = Utils.toTime(toDate);
   }
 
   @override
@@ -358,9 +354,11 @@ class _AddEventState extends State<AddEvent> {
     if (isValid) {
       final data = Map<String, dynamic>.from(_formKey.currentState!.value);
 
+      data["fromDate"] =
+          (fromDate).millisecondsSinceEpoch; //transform date to timestamp
+      data["toDate"] =
+          (toDate).millisecondsSinceEpoch; //transform date to timestamp
       data['title'] = titleController.text;
-      data['fromDate'] = fromDate;
-      data['toDate'] = toDate;
       data['addedUsers'] = addPersonsController.text;
       data['user_id'] = userid.toString();
       data['color'] = 0xFF73BBB3;

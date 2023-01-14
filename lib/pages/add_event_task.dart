@@ -24,8 +24,6 @@ class _AddEventTaskState extends State<AddEventTask> {
 
   late DateTime fromDate;
   late DateTime toDate;
-  late DateTime fromTime;
-  late DateTime toTime;
 
   late TextEditingController fromDateController = TextEditingController(),
       endDateController = TextEditingController(),
@@ -40,14 +38,12 @@ class _AddEventTaskState extends State<AddEventTask> {
 
     fromDate = widget.selectedDate;
     toDate = fromDate.add(const Duration(hours: 1));
-    fromTime = DateTime.now();
-    toTime = fromTime.add(const Duration(hours: 1));
 
     //initialize date and time to today's date + 1 hour
     fromDateController.text = Utils.toDate(fromDate);
     endDateController.text = Utils.toDate(toDate);
-    beginTimeController.text = Utils.toTime(fromTime);
-    endTimeController.text = Utils.toTime(toTime);
+    beginTimeController.text = Utils.toTime(fromDate);
+    endTimeController.text = Utils.toTime(toDate);
   }
 
   @override
@@ -125,7 +121,7 @@ class _AddEventTaskState extends State<AddEventTask> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "de",
+                  "du",
                   style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
                 FormBuilderTextField(

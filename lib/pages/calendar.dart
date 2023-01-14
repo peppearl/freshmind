@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_helpers/firebase_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
@@ -14,21 +16,40 @@ import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({Key? key}) : super(key: key);
+  const Calendar({
+    Key? key,
+    /*
+   required this.menuScreenContext,
+      required this.onScreenHideButtonPressed,
+      this.hideStatus = false
+      */
+  }) : super(key: key);
+
+/*
+  final BuildContext menuScreenContext;
+  final VoidCallback onScreenHideButtonPressed;
+  final bool hideStatus;
+  */
 
   @override
   State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
+class _CalendarState extends State<Calendar>
+    with SingleTickerProviderStateMixin {
   String locale = "fr";
   late DateFormat timeFormat;
 
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
 
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  late TabController _tabController;
+
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
 
     _selectedDay = _focusedDay;
@@ -46,6 +67,13 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
+  //get minutes in hh:mm
+  String getTimeString(int value) {
+    final int hour = value ~/ 60;
+    final int minutes = value % 60;
+    return '${hour.toString().padLeft(2, "0")}h${minutes.toString().padLeft(2, "0")}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,23 +88,8 @@ class _CalendarState extends State<Calendar> {
           children: [
             const AppBarTitle(title: "MON PLANNING"),
             _addDateBar(),
-            StreamBuilder(
-              stream: eventDBS.streamList(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  final events = snapshot.data;
-                  ListView.builder(
-                      itemCount: events.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        Event event = events[index];
-                        return ListTile(
-                          title: Text(events.title),
-                        );
-                      });
-                }
-                return const Text("");
-              },
-            )
+            tabBar(),
+            showEvents(),
           ],
         ),
       ),
@@ -172,6 +185,78 @@ class _CalendarState extends State<Calendar> {
           )
         ]),
       ),
+    );
+  }
+
+  tabBar() {
+    String formattedSelectedDate;
+    if (_selectedDay == DateFormat("d MMMM", "fr_FR").format(DateTime.now())) {
+      formattedSelectedDate = "Aujourd'hui";
+    } else {
+      formattedSelectedDate =
+          DateFormat("d MMMM", "fr_FR").format(_selectedDay);
+    }
+    return TabBar(
+      unselectedLabelColor: Colors.black,
+      labelColor: Colors.red,
+      tabs: [
+        Tab(
+          text: formattedSelectedDate,
+        ),
+        const Tab(
+          text: "Ce mois-ci",
+        )
+      ],
+      controller: _tabController,
+      indicatorSize: TabBarIndicatorSize.tab,
+    );
+  }
+
+  //showing events
+  showEvents() {
+    //get user id of the current user
+    final User? user = auth.currentUser;
+    final userid = user?.uid;
+
+    return StreamBuilder(
+      stream: eventDBS.streamQueryList(args: [
+        //show only the events created by current user
+        QueryArgsV2("user_id", isEqualTo: userid.toString())
+      ]),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          final events = snapshot.data;
+
+          return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: events.length,
+              itemBuilder: (BuildContext context, int index) {
+                Event event = events[index];
+                DateTime date = event.fromDate;
+
+                //getting the difference between now time and the event time
+                int difference = date.difference(DateTime.now()).inMinutes;
+
+                String time = getTimeString(difference);
+                final String stringDate;
+
+                if (!time.contains('-')) {
+                  stringDate = "Evènement dans $time";
+                } else {
+                  String formattedDate =
+                      DateFormat("hh : mm", 'fr_FR').format(date);
+                  stringDate = "Aujourd'hui, $formattedDate";
+                }
+
+                return ListTile(
+                  title: Text(event.title),
+                  subtitle: Text(stringDate),
+                );
+              });
+        }
+        return const CircularProgressIndicator();
+      },
     );
   }
 
