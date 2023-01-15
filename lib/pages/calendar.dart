@@ -18,18 +18,7 @@ import 'package:table_calendar/table_calendar.dart';
 class Calendar extends StatefulWidget {
   const Calendar({
     Key? key,
-    /*
-   required this.menuScreenContext,
-      required this.onScreenHideButtonPressed,
-      this.hideStatus = false
-      */
   }) : super(key: key);
-
-/*
-  final BuildContext menuScreenContext;
-  final VoidCallback onScreenHideButtonPressed;
-  final bool hideStatus;
-  */
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -78,11 +67,13 @@ class _CalendarState extends State<Calendar>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      /*
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(60),
         child: GetAppBar(),
       ),
-      body: SingleChildScrollView(
+      */
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,7 +103,7 @@ class _CalendarState extends State<Calendar>
               label: 'Evènement',
               labelBackgroundColor: Colors.transparent,
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-              onTap: () => showModalEvent(),
+              onTap: () => Get.to(() => AddEvent(selectedDate: _selectedDay)),
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
           SpeedDialChild(
               child: const Icon(Icons.brush),
@@ -121,7 +112,8 @@ class _CalendarState extends State<Calendar>
               labelBackgroundColor: Colors.transparent,
               label: 'Tâches',
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-              onTap: () => showModalTask(),
+              onTap: () =>
+                  Get.to(() => AddEventTask(selectedDate: _selectedDay)),
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
         ],
       ),
@@ -227,33 +219,33 @@ class _CalendarState extends State<Calendar>
         if (snapshot.hasData) {
           final events = snapshot.data;
 
-          return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: events.length,
-              itemBuilder: (BuildContext context, int index) {
-                Event event = events[index];
-                DateTime date = event.fromDate;
+          return Expanded(
+            child: ListView.builder(
+                itemCount: events.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Event event = events[index];
+                  DateTime date = event.fromDate;
 
-                //getting the difference between now time and the event time
-                int difference = date.difference(DateTime.now()).inMinutes;
+                  //getting the difference between now time and the event time
+                  int difference = date.difference(DateTime.now()).inMinutes;
 
-                String time = getTimeString(difference);
-                final String stringDate;
+                  String time = getTimeString(difference);
+                  final String stringDate;
 
-                if (!time.contains('-')) {
-                  stringDate = "Evènement dans $time";
-                } else {
-                  String formattedDate =
-                      DateFormat("hh : mm", 'fr_FR').format(date);
-                  stringDate = "Aujourd'hui, $formattedDate";
-                }
+                  if (!time.contains('-')) {
+                    stringDate = "Evènement dans $time";
+                  } else {
+                    String formattedDate =
+                        DateFormat("hh : mm", 'fr_FR').format(date);
+                    stringDate = "Aujourd'hui, $formattedDate";
+                  }
 
-                return ListTile(
-                  title: Text(event.title),
-                  subtitle: Text(stringDate),
-                );
-              });
+                  return ListTile(
+                    title: Text(event.title),
+                    subtitle: Text(stringDate),
+                  );
+                }),
+          );
         }
         return const CircularProgressIndicator();
       },

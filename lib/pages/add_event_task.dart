@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
@@ -56,51 +58,70 @@ class _AddEventTaskState extends State<AddEventTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-      height: 580,
-      child: ListView(
-        children: [
-          FormBuilder(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MyInputField(
-                  fieldName: "title",
-                  controller: titleController,
-                  title: "Nom de la tâche",
-                  hint: "Nom de la tâche",
-                  textColor: const Color(0xFFB97C7B),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Champ vide";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                buildDateTimePickers(),
-                const SizedBox(height: 20),
-                InputFieldIcon(
-                    fieldName: "add_person",
-                    iconColor: const Color(0xFFB97C7B),
-                    controller: addPersonsController,
-                    title: "Ajouter des personnes à la tâche",
-                    hint: "Invite une personne",
-                    textColor: const Color(0xFFB97C7B)),
-                const SizedBox(height: 20),
-                Center(
-                  child: ButtonWhiteText(
-                      backgroundColor: const Color(0xFFB97C7B),
-                      title: "Ajouter la tâche",
-                      elevation: 0,
-                      onPressed: () => saveForm()),
-                )
-              ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SafeArea(child: AppBarTitle(title: "AJOUTER UNE TACHE")),
+            Container(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              height: 580,
+              child: ListView(
+                children: [
+                  FormBuilder(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyInputField(
+                          fieldName: "title",
+                          controller: titleController,
+                          title: "Nom de la tâche",
+                          hint: "Nom de la tâche",
+                          textColor: const Color(0xFFB97C7B),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Champ vide";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        buildDateTimePickers(),
+                        const SizedBox(height: 20),
+                        InputFieldIcon(
+                            fieldName: "add_person",
+                            iconColor: const Color(0xFFB97C7B),
+                            controller: addPersonsController,
+                            title: "Ajouter des personnes à la tâche",
+                            hint: "Invite une personne",
+                            textColor: const Color(0xFFB97C7B)),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: ButtonWhiteText(
+                              backgroundColor: const Color(0xFFB97C7B),
+                              title: "Ajouter la tâche",
+                              elevation: 0,
+                              onPressed: () => saveForm()),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            RichText(
+                text: TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => Get.back(),
+                    text: "Retour",
+                    style: const TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFB97C7B))))
+          ],
+        ),
       ),
     );
   }
