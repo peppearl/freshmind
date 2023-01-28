@@ -46,6 +46,12 @@ class _CalendarState extends State<Calendar>
     initializeDateFormatting(locale).then((_) => setState(() {}));
   }
 
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
@@ -80,7 +86,7 @@ class _CalendarState extends State<Calendar>
             const AppBarTitle(title: "MON PLANNING"),
             _addDateBar(),
             tabBar(),
-            showEvents(),
+            tabBarView(),
           ],
         ),
       ),
@@ -120,6 +126,7 @@ class _CalendarState extends State<Calendar>
     );
   }
 
+  //calendar
   _addDateBar() {
     return Container(
       color: const Color(0xFF73BBB3),
@@ -180,17 +187,25 @@ class _CalendarState extends State<Calendar>
     );
   }
 
+  //tab bar title
   tabBar() {
     String formattedSelectedDate;
-    if (_selectedDay == DateFormat("d MMMM", "fr_FR").format(DateTime.now())) {
+    //convert date to string for comparisons
+    String dateNow = DateFormat("d MMMM", "fr_FR").format(DateTime.now());
+    String selectedDate = DateFormat("d MMMM", "fr_FR").format(_selectedDay);
+
+    //either show today or date for selected date in tab bar
+    if (dateNow == selectedDate) {
       formattedSelectedDate = "Aujourd'hui";
     } else {
       formattedSelectedDate =
           DateFormat("d MMMM", "fr_FR").format(_selectedDay);
     }
     return TabBar(
-      unselectedLabelColor: Colors.black,
-      labelColor: Colors.red,
+      unselectedLabelColor: const Color(0xFFD9DBDB),
+      labelColor: const Color.fromARGB(255, 185, 124, 123),
+      indicatorColor: Colors.transparent,
+      isScrollable: true,
       tabs: [
         Tab(
           text: formattedSelectedDate,
@@ -204,27 +219,51 @@ class _CalendarState extends State<Calendar>
     );
   }
 
+  //tab bar content
+  tabBarView() {
+    return Expanded(
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          showEvents(true),
+          showEvents(false),
+        ],
+      ),
+    );
+  }
+
   //showing events
-  showEvents() {
+  showEvents(bool daySelected) {
     //get user id of the current user
     final User? user = auth.currentUser;
     final userid = user?.uid;
 
-    return StreamBuilder(
-      stream: eventDBS.streamQueryList(args: [
-        //show only the events created by current user
-        QueryArgsV2("user_id", isEqualTo: userid.toString())
-      ]),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          final events = snapshot.data;
+    if (daySelected) {
+      return const Text("test");
+    } else {
+      return StreamBuilder(
+        stream: eventDBS.streamQueryList(args: [
+          //show only the events created by current user
+          QueryArgsV2("user_id", isEqualTo: userid.toString()),
+        ]),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            final events = snapshot.data;
 
-          return Expanded(
-            child: ListView.builder(
+            return ListView.builder(
                 itemCount: events.length,
                 itemBuilder: (BuildContext context, int index) {
                   Event event = events[index];
                   DateTime date = event.fromDate;
+
+                  //know if this is an event or a task
+                  String eventType;
+
+                  if (event.color == 4285774771) {
+                    eventType = "Evènement dans";
+                  } else {
+                    eventType = "Tâche à accomplir dans";
+                  }
 
                   //getting the difference between now time and the event time
                   int difference = date.difference(DateTime.now()).inMinutes;
@@ -232,24 +271,31 @@ class _CalendarState extends State<Calendar>
                   String time = getTimeString(difference);
                   final String stringDate;
 
-                  if (!time.contains('-')) {
-                    stringDate = "Evènement dans $time";
-                  } else {
+                  if (!time.contains('-') && daySelected == true) {
+                    stringDate = "$eventType $time";
+                  } else if (time.contains('-') && daySelected == true) {
                     String formattedDate =
-                        DateFormat("hh : mm", 'fr_FR').format(date);
+                        DateFormat("HH : mm", 'fr_FR').format(date);
                     stringDate = "Aujourd'hui, $formattedDate";
+                  } /*else if (!time.contains('-') && daySelected == false) {
+                  stringDate = "Evènement dans $time futur";
+                } */
+                  else {
+                    String formattedDate =
+                        DateFormat("d MMMM à HH:mm", 'fr_FR').format(date);
+                    stringDate = "Le $formattedDate";
                   }
 
                   return ListTile(
                     title: Text(event.title),
                     subtitle: Text(stringDate),
                   );
-                }),
-          );
-        }
-        return const CircularProgressIndicator();
-      },
-    );
+                });
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+    }
   }
 
   showModalEvent() => showDialog(
