@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
 import 'package:freshmind/events/data/models/event.dart';
-import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/utils.dart';
 import 'package:get/get.dart';
 
@@ -372,7 +372,7 @@ class _AddEventState extends State<AddEvent> {
     }
   }
 
-  Future saveForm() async {
+  void saveForm() async {
     final isValid = _formKey.currentState!.validate();
     if (addPersonsController.text.isEmpty) {
       addPersonsController.text = "";
@@ -382,6 +382,22 @@ class _AddEventState extends State<AddEvent> {
     final User? user = auth.currentUser;
     final userid = user?.uid;
 
+    if (isValid) {
+      await FirebaseFirestore.instance.collection('events').add({
+        "title": titleController.text,
+        "fromDate":
+            (fromDate).millisecondsSinceEpoch, //transform date to timestamp
+        "toDate": (toDate).millisecondsSinceEpoch, //transform date to timestamp
+        "addedUsers": addPersonsController.text,
+        "color": 0xFF73BBB3,
+        "user_id": userid.toString(),
+      });
+      if (mounted) {
+        Navigator.pop<bool>(context, true);
+      }
+    }
+
+/*
     if (isValid) {
       final data = Map<String, dynamic>.from(_formKey.currentState!.value);
 
@@ -395,13 +411,14 @@ class _AddEventState extends State<AddEvent> {
       if (widget.event == null) {
         data['user_id'] = userid.toString();
 
-        await eventDBS.create(data);
+        //await eventDBS.create(data);
       } else {
         //edit and update event
-        await eventDBS.updateData(widget.event!.id, data);
+        //await eventDBS.updateData(widget.event!.id, data);
       }
 
       Get.back();
     }
+    */
   }
 }
