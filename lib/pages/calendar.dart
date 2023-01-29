@@ -55,7 +55,6 @@ class _CalendarState extends State<Calendar>
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
-        print(selectedDay.toIso8601String());
       });
     }
   }
@@ -69,24 +68,34 @@ class _CalendarState extends State<Calendar>
 
   @override
   Widget build(BuildContext context) {
+    //get user id of the current user
+    final User? user = auth.currentUser;
+    final userid = user?.uid;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      /*
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(60),
-        child: GetAppBar(),
-      ),
-      */
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const AppBarTitle(title: "MON PLANNING"),
-            _addDateBar(),
-            tabBar(),
-            tabBarView(),
-          ],
-        ),
+        child: StreamBuilder(
+            stream: eventDBS.streamQueryList(args: [
+              //show only the events created by current user
+              QueryArgsV2("user_id", isEqualTo: userid.toString()),
+            ]),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                final events = snapshot.data;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const AppBarTitle(title: "MON PLANNING"),
+                    _addDateBar(),
+                    tabBar(),
+                    tabBarView(events),
+                  ],
+                );
+              }
+              return const CircularProgressIndicator();
+            }),
       ),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
@@ -161,11 +170,7 @@ class _CalendarState extends State<Calendar>
                 )),
             startingDayOfWeek: StartingDayOfWeek.monday,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            onDaySelected: _onDaySelected
-            /*(date, events) {
-              print(date.toIso8601String());
-            },*/
-            ,
+            onDaySelected: _onDaySelected,
             calendarBuilders: CalendarBuilders(
               selectedBuilder: (context, date, events) => Container(
                   margin: const EdgeInsets.all(6),
@@ -220,92 +225,75 @@ class _CalendarState extends State<Calendar>
   }
 
   //tab bar content
-  tabBarView() {
+  tabBarView(dynamic events) {
     return Expanded(
       child: TabBarView(
         controller: _tabController,
         children: [
-          showEvents(true),
-          showEvents(false),
+          showEvents(true, events),
+          showEvents(false, events),
         ],
       ),
     );
   }
 
   //showing events
-  showEvents(bool daySelected) {
-    //get user id of the current user
-    final User? user = auth.currentUser;
-    final userid = user?.uid;
-
+  showEvents(bool daySelected, dynamic events) {
     if (daySelected) {
       return const Text("test");
     } else {
-      return StreamBuilder(
-        stream: eventDBS.streamQueryList(args: [
-          //show only the events created by current user
-          QueryArgsV2("user_id", isEqualTo: userid.toString()),
-        ]),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            final events = snapshot.data;
+      return ListView.builder(
+          itemCount: events.length,
+          itemBuilder: (BuildContext context, int index) {
+            Event event = events[index];
+            DateTime date = event.fromDate;
 
-            return ListView.builder(
-                itemCount: events.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Event event = events[index];
-                  DateTime date = event.fromDate;
+            //know if this is an event or a task
+            String eventType;
 
-                  //know if this is an event or a task
-                  String eventType;
+            if (event.color == 4285774771) {
+              eventType = "Evènement dans";
+            } else {
+              eventType = "Tâche à accomplir dans";
+            }
 
-                  if (event.color == 4285774771) {
-                    eventType = "Evènement dans";
-                  } else {
-                    eventType = "Tâche à accomplir dans";
-                  }
+            //getting the difference between now time and the event time
+            int difference = date.difference(DateTime.now()).inMinutes;
 
-                  //getting the difference between now time and the event time
-                  int difference = date.difference(DateTime.now()).inMinutes;
+            String time = getTimeString(difference);
+            final String stringDate;
 
-                  String time = getTimeString(difference);
-                  final String stringDate;
+            //convert date to string for comparisons
+            String dateNow =
+                DateFormat("d MMMM", "fr_FR").format(DateTime.now());
+            String eventDate = DateFormat("d MMMM", "fr_FR").format(date);
 
-                  //convert date to string for comparisons
-                  String dateNow =
-                      DateFormat("d MMMM", "fr_FR").format(DateTime.now());
-                  String eventDate = DateFormat("d MMMM", "fr_FR").format(date);
-
-                  //today in the future
-                  if (!time.contains('-') && dateNow == eventDate) {
-                    stringDate = "$eventType $time";
-                  }
-                  //today in the past
-                  else if (time.contains('-') && dateNow == eventDate) {
-                    String formattedDate =
-                        DateFormat("HH : mm", 'fr_FR').format(date);
-                    stringDate = "Aujourd'hui, $formattedDate";
-                  } /*else if (!time.contains('-') && daySelected == false) {
+            //today in the future
+            if (!time.contains('-') && dateNow == eventDate) {
+              stringDate = "$eventType $time";
+            }
+            //today in the past
+            else if (time.contains('-') && dateNow == eventDate) {
+              String formattedDate =
+                  DateFormat("HH : mm", 'fr_FR').format(date);
+              stringDate = "Aujourd'hui, $formattedDate";
+            } /*else if (!time.contains('-') && daySelected == false) {
                   stringDate = "Evènement dans $time futur";
                 } */
-                  //date in the future or past but not today
-                  else {
-                    String formattedDate =
-                        DateFormat("d MMMM à HH:mm", 'fr_FR').format(date);
-                    stringDate = "Le $formattedDate";
-                  }
+            //date in the future or past but not today
+            else {
+              String formattedDate =
+                  DateFormat("d MMMM à HH:mm", 'fr_FR').format(date);
+              stringDate = "Le $formattedDate";
+            }
 
-                  return ListTile(
-                    title: Text(event.title),
-                    subtitle: Text(stringDate),
-                    //onTap: () => Get.to(() => EventDetails(event: event)),
-                    onTap: () => showModalEventDetails(event),
-                  );
-                });
-          }
-          return const CircularProgressIndicator();
-        },
-      );
+            return ListTile(
+              title: Text(event.title),
+              subtitle: Text(stringDate),
+              //onTap: () => Get.to(() => EventDetails(event: event)),
+              onTap: () => showModalEventDetails(event),
+            );
+          });
     }
   }
 
