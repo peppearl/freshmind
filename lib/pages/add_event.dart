@@ -6,14 +6,16 @@ import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
+import 'package:freshmind/events/data/models/event.dart';
 import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/utils.dart';
 import 'package:get/get.dart';
 
 class AddEvent extends StatefulWidget {
-  final DateTime selectedDate;
+  final DateTime? selectedDate;
+  final Event? event;
 
-  const AddEvent({Key? key, required this.selectedDate}) : super(key: key);
+  const AddEvent({Key? key, this.selectedDate, this.event}) : super(key: key);
 
   @override
   State<AddEvent> createState() => _AddEventState();
@@ -38,10 +40,18 @@ class _AddEventState extends State<AddEvent> {
   void initState() {
     super.initState();
 
-    fromDate = widget.selectedDate;
-    toDate = fromDate.add(const Duration(hours: 1));
+    if (widget.event != null) {
+      //get event details if it is an edit
+      fromDate = widget.event!.fromDate;
+      toDate = widget.event!.toDate;
+      titleController.text = widget.event!.title;
+      addPersonsController.text = widget.event!.addedUsers;
+    } else {
+      fromDate = widget.selectedDate!;
+      toDate = fromDate.add(const Duration(hours: 1));
+    }
 
-    //initialize date and time to today's date + 1 hour
+    //initialize date and time
     fromDateController.text = Utils.toDate(fromDate);
     endDateController.text = Utils.toDate(toDate);
     beginTimeController.text = Utils.toTime(fromDate);
@@ -63,7 +73,7 @@ class _AddEventState extends State<AddEvent> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SafeArea(child: AppBarTitle(title: "AJOUTER UN EVENEMENT")),
+            const SafeArea(child: AppBarTitle(title: "Ajouter un évènement")),
             Container(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               height: 580,
@@ -142,7 +152,7 @@ class _AddEventState extends State<AddEvent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "de",
+                  "du",
                   style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
                 ),
                 FormBuilderTextField(
@@ -223,7 +233,7 @@ class _AddEventState extends State<AddEvent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "à",
+                  "au",
                   style: TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
                 ),
                 FormBuilderTextField(
@@ -381,10 +391,16 @@ class _AddEventState extends State<AddEvent> {
           (toDate).millisecondsSinceEpoch; //transform date to timestamp
       data['title'] = titleController.text;
       data['addedUsers'] = addPersonsController.text;
-      data['user_id'] = userid.toString();
       data['color'] = 0xFF73BBB3;
+      if (widget.event == null) {
+        data['user_id'] = userid.toString();
 
-      await eventDBS.create(data);
+        await eventDBS.create(data);
+      } else {
+        //edit and update event
+        await eventDBS.updateData(widget.event!.id, data);
+      }
+
       Get.back();
     }
   }

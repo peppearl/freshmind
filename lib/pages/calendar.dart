@@ -1,15 +1,13 @@
-import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_helpers/firebase_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
-import 'package:freshmind/components/get_app_bar.dart';
 import 'package:freshmind/events/data/models/event.dart';
 import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:freshmind/pages/add_event_task.dart';
+import 'package:freshmind/pages/event_details.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:get/get.dart';
@@ -137,10 +135,12 @@ class _CalendarState extends State<Calendar>
           const SizedBox(height: 20),
           TableCalendar(
             focusedDay: DateTime.now(),
-            firstDay: DateTime.utc(2022, 10, 1),
+            firstDay: DateTime.now(),
             lastDay: DateTime.utc(2024, 12, 31),
             locale: 'fr',
             calendarStyle: const CalendarStyle(
+              disabledTextStyle: TextStyle(color: Color(0xFF629E98)),
+              defaultTextStyle: TextStyle(color: Colors.white),
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
                   color: Color.fromARGB(255, 185, 124, 123),
@@ -271,15 +271,24 @@ class _CalendarState extends State<Calendar>
                   String time = getTimeString(difference);
                   final String stringDate;
 
-                  if (!time.contains('-') && daySelected == true) {
+                  //convert date to string for comparisons
+                  String dateNow =
+                      DateFormat("d MMMM", "fr_FR").format(DateTime.now());
+                  String eventDate = DateFormat("d MMMM", "fr_FR").format(date);
+
+                  //today in the future
+                  if (!time.contains('-') && dateNow == eventDate) {
                     stringDate = "$eventType $time";
-                  } else if (time.contains('-') && daySelected == true) {
+                  }
+                  //today in the past
+                  else if (time.contains('-') && dateNow == eventDate) {
                     String formattedDate =
                         DateFormat("HH : mm", 'fr_FR').format(date);
                     stringDate = "Aujourd'hui, $formattedDate";
                   } /*else if (!time.contains('-') && daySelected == false) {
                   stringDate = "Evènement dans $time futur";
                 } */
+                  //date in the future or past but not today
                   else {
                     String formattedDate =
                         DateFormat("d MMMM à HH:mm", 'fr_FR').format(date);
@@ -289,6 +298,8 @@ class _CalendarState extends State<Calendar>
                   return ListTile(
                     title: Text(event.title),
                     subtitle: Text(stringDate),
+                    //onTap: () => Get.to(() => EventDetails(event: event)),
+                    onTap: () => showModalEventDetails(event),
                   );
                 });
           }
@@ -298,14 +309,14 @@ class _CalendarState extends State<Calendar>
     }
   }
 
-  showModalEvent() => showDialog(
+  showModalEventDetails(event) => showDialog(
       context: context,
       builder: (context) {
         return Dialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             elevation: 16,
-            child: AddEvent(selectedDate: _selectedDay));
+            child: EventDetails(event: event));
       });
 
   showModalTask() => showDialog(

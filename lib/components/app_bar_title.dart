@@ -26,7 +26,7 @@ class AppBarTitle extends StatelessWidget {
         ],
       ),
       child: Text(
-        title,
+        title.toUpperCase(),
         textAlign: TextAlign.center,
         style: const TextStyle(
           height: 2,

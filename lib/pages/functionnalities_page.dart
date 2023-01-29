@@ -21,7 +21,7 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
       body: Column(
         children: [
           const AppBarTitle(
-            title: 'FONCTIONNALITES',
+            title: 'Fonctionnalités',
           ),
           Expanded(
             child: Padding(

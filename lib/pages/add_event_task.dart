@@ -6,14 +6,17 @@ import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/components/input_field_icon.dart';
+import 'package:freshmind/events/data/models/event.dart';
 import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/utils.dart';
 import 'package:get/get.dart';
 
 class AddEventTask extends StatefulWidget {
-  final DateTime selectedDate;
+  final DateTime? selectedDate;
+  final Event? event;
 
-  const AddEventTask({Key? key, required this.selectedDate}) : super(key: key);
+  const AddEventTask({Key? key, this.selectedDate, this.event})
+      : super(key: key);
 
   @override
   State<AddEventTask> createState() => _AddEventTaskState();
@@ -38,8 +41,16 @@ class _AddEventTaskState extends State<AddEventTask> {
   void initState() {
     super.initState();
 
-    fromDate = widget.selectedDate;
-    toDate = fromDate.add(const Duration(hours: 1));
+    if (widget.event != null) {
+      //get event details if it is an edit
+      fromDate = widget.event!.fromDate;
+      toDate = widget.event!.toDate;
+      titleController.text = widget.event!.title;
+      addPersonsController.text = widget.event!.addedUsers;
+    } else {
+      fromDate = widget.selectedDate!;
+      toDate = fromDate.add(const Duration(hours: 1));
+    }
 
     //initialize date and time to today's date + 1 hour
     fromDateController.text = Utils.toDate(fromDate);
@@ -63,7 +74,7 @@ class _AddEventTaskState extends State<AddEventTask> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SafeArea(child: AppBarTitle(title: "AJOUTER UNE TACHE")),
+            const SafeArea(child: AppBarTitle(title: "Ajouter une tâche")),
             Container(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               height: 580,
@@ -379,8 +390,15 @@ class _AddEventTaskState extends State<AddEventTask> {
       data['fromDate'] = fromDate;
       data['toDate'] = toDate;
       data['addedUsers'] = addPersonsController.text;
-      data['user_id'] = userid.toString();
       data['color'] = 0xFFB97C7B;
+      if (widget.event == null) {
+        data['user_id'] = userid.toString();
+
+        await eventDBS.create(data);
+      } else {
+        //edit and update event
+        await eventDBS.updateData(widget.event!.id, data);
+      }
 
       await eventDBS.create(data);
       Get.back();
