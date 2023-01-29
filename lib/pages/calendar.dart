@@ -1,22 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_helpers/firebase_helpers.dart';
+import 'dart:collection';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/events/data/models/event.dart';
-import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:freshmind/pages/add_event_task.dart';
-import 'package:freshmind/pages/event_details.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends StatefulWidget {
-  const Calendar({
-    Key? key,
-  }) : super(key: key);
+  const Calendar({super.key});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -24,79 +21,185 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar>
     with SingleTickerProviderStateMixin {
+  //set locale to french
   String locale = "fr";
   late DateFormat timeFormat;
 
-  DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay = DateTime.now();
+  //calendar
+  late DateTime _focusedDay;
+  late DateTime _firstDay;
+  late DateTime _lastDay;
+  late DateTime _selectedDay;
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
+  //for the tab
   late TabController _tabController;
+
+  //to provide events in calendar
+  late Map<DateTime, List<Event>> _events;
+
+  int getHashCode(DateTime key) {
+    return key.day * 1000000 + key.month * 10000 + key.year;
+  }
+
+  //get events from firebase
+  _loadFirestoreEvents() async {
+    final firstDay =
+        DateTime(_focusedDay.year, _focusedDay.month, 1).millisecondsSinceEpoch;
+    final lastDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 0)
+        .millisecondsSinceEpoch;
+    _events = {};
+
+    final snap = await FirebaseFirestore.instance
+        .collection('events')
+        .where('fromDate', isGreaterThanOrEqualTo: firstDay)
+        .where('fromDate', isLessThanOrEqualTo: lastDay)
+        .withConverter(
+            fromFirestore: Event.fromFirestore,
+            toFirestore: (event, options) => event.toFirestore())
+        .get();
+    for (var doc in snap.docs) {
+      final event = doc.data();
+      final day = DateTime.utc(
+          event.fromDate.year, event.fromDate.month, event.fromDate.day);
+      if (_events[day] == null) {
+        _events[day] = [];
+      }
+      _events[day]!.add(event);
+    }
+
+    setState(() {});
+  }
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
     super.initState();
 
-    _selectedDay = _focusedDay;
+    //calendar
+    _focusedDay = DateTime.now();
+    _firstDay = DateTime.now();
+    _lastDay = _lastDay = DateTime.now().add(const Duration(days: 1000));
+    _selectedDay = DateTime.now();
 
+    //events loaded at the beginning
+    _loadFirestoreEvents();
+
+    //tabs
+    _tabController = TabController(length: 2, vsync: this);
+
+    //locale
     initializeDateFormatting(locale).then((_) => setState(() {}));
+
+    //to provide events in calendar
+    _events = LinkedHashMap(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    );
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
-        _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
-      });
-    }
-  }
-
-  //get minutes in hh:mm
-  String getTimeString(int value) {
-    final int hour = value ~/ 60;
-    final int minutes = value % 60;
-    return '${hour.toString().padLeft(2, "0")}h${minutes.toString().padLeft(2, "0")}';
+  //to display event markers
+  List _getEventsForTheDay(DateTime day) {
+    return _events[day] ?? [];
   }
 
   @override
   Widget build(BuildContext context) {
-    //get user id of the current user
-    final User? user = auth.currentUser;
-    final userid = user?.uid;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: StreamBuilder(
-            stream: eventDBS.streamQueryList(args: [
-              //show only the events created by current user
-              QueryArgsV2("user_id", isEqualTo: userid.toString()),
-            ]),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                final events = snapshot.data;
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AppBarTitle(title: "MON PLANNING"),
-                    _addDateBar(),
-                    tabBar(),
-                    tabBarView(events),
-                  ],
-                );
-              }
-              return const CircularProgressIndicator();
-            }),
-      ),
+          child: Column(
+        children: [
+          const AppBarTitle(title: "MON PLANNING"),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  color: const Color(0xFF73BBB3),
+                  height: 400,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TableCalendar(
+                    focusedDay: _focusedDay,
+                    firstDay: _firstDay,
+                    lastDay: _lastDay,
+                    //eventLoader: _getEventsForTheDay,
+                    locale: 'fr',
+                    calendarStyle: const CalendarStyle(
+                      disabledTextStyle: TextStyle(color: Color(0xFF629E98)),
+                      defaultTextStyle: TextStyle(color: Colors.white),
+                      outsideDaysVisible: false,
+                      selectedTextStyle:
+                          TextStyle(color: Color.fromARGB(255, 185, 124, 123)),
+                      todayDecoration: BoxDecoration(
+                          color: Color.fromARGB(255, 185, 124, 123),
+                          shape: BoxShape.circle),
+                      selectedDecoration: BoxDecoration(
+                          color: Colors.white, shape: BoxShape.circle),
+                    ),
+                    headerStyle: const HeaderStyle(
+                        titleTextStyle: TextStyle(color: Colors.white),
+                        formatButtonVisible: false,
+                        leftChevronIcon: Icon(
+                          Icons.chevron_left,
+                          color: Colors.white,
+                        ),
+                        rightChevronIcon: Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                        )),
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    onPageChanged: (focusedDay) {
+                      setState(() {
+                        _focusedDay = focusedDay;
+                      });
+                      _loadFirestoreEvents();
+                    },
+                    selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay;
+                      });
+                    },
+                  ),
+                ),
+                tabBar(),
+                Expanded(
+                    child: TabBarView(controller: _tabController, children: [
+                  ListView(
+                    children: [
+                      ..._getEventsForTheDay(_selectedDay).map(
+                        (event) => ListTile(
+                          title: Text(
+                            event.title,
+                          ),
+                          subtitle: Text(
+                            event.fromDate.toString(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListView(
+                    children: [
+                      ..._getEventsForTheDay(_selectedDay).map(
+                        (event) => ListTile(
+                          title: Text(
+                            event.title,
+                          ),
+                          subtitle: Text(
+                            event.fromDate.toString(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ])),
+              ],
+            ),
+          ),
+        ],
+      )),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
@@ -116,7 +219,13 @@ class _CalendarState extends State<Calendar>
               label: 'Evènement',
               labelBackgroundColor: Colors.transparent,
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-              onTap: () => Get.to(() => AddEvent(selectedDate: _selectedDay)),
+              onTap: () async {
+                final result =
+                    await Get.to(() => AddEvent(selectedDate: _selectedDay));
+                if (result ?? false) {
+                  _loadFirestoreEvents();
+                }
+              },
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
           SpeedDialChild(
               child: const Icon(Icons.brush),
@@ -125,74 +234,19 @@ class _CalendarState extends State<Calendar>
               labelBackgroundColor: Colors.transparent,
               label: 'Tâches',
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
-              onTap: () =>
-                  Get.to(() => AddEventTask(selectedDate: _selectedDay)),
+              onTap: () async {
+                final result = await Get.to(
+                    () => AddEventTask(selectedDate: _selectedDay));
+                if (result ?? false) {
+                  _loadFirestoreEvents();
+                }
+              },
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
         ],
       ),
     );
   }
 
-  //calendar
-  _addDateBar() {
-    return Container(
-      color: const Color(0xFF73BBB3),
-      height: 430,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(children: [
-          const SizedBox(height: 20),
-          TableCalendar(
-            focusedDay: DateTime.now(),
-            firstDay: DateTime.now(),
-            lastDay: DateTime.utc(2024, 12, 31),
-            locale: 'fr',
-            calendarStyle: const CalendarStyle(
-              disabledTextStyle: TextStyle(color: Color(0xFF629E98)),
-              defaultTextStyle: TextStyle(color: Colors.white),
-              outsideDaysVisible: false,
-              todayDecoration: BoxDecoration(
-                  color: Color.fromARGB(255, 185, 124, 123),
-                  shape: BoxShape.circle),
-              selectedDecoration:
-                  BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-            ),
-            headerStyle: const HeaderStyle(
-                titleTextStyle: TextStyle(color: Colors.white),
-                formatButtonVisible: false,
-                leftChevronIcon: Icon(
-                  Icons.chevron_left,
-                  color: Colors.white,
-                ),
-                rightChevronIcon: Icon(
-                  Icons.chevron_right,
-                  color: Colors.white,
-                )),
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            onDaySelected: _onDaySelected,
-            calendarBuilders: CalendarBuilders(
-              selectedBuilder: (context, date, events) => Container(
-                  margin: const EdgeInsets.all(6),
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      color: Colors.white, shape: BoxShape.circle),
-                  child: Text(date.day.toString())),
-              todayBuilder: (context, date, events) => Container(
-                  margin: const EdgeInsets.all(6),
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 185, 124, 123),
-                      shape: BoxShape.circle),
-                  child: Text(date.day.toString())),
-            ),
-          )
-        ]),
-      ),
-    );
-  }
-
-  //tab bar title
   tabBar() {
     String formattedSelectedDate;
     //convert date to string for comparisons
@@ -223,97 +277,4 @@ class _CalendarState extends State<Calendar>
       indicatorSize: TabBarIndicatorSize.tab,
     );
   }
-
-  //tab bar content
-  tabBarView(dynamic events) {
-    return Expanded(
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          showEvents(true, events),
-          showEvents(false, events),
-        ],
-      ),
-    );
-  }
-
-  //showing events
-  showEvents(bool daySelected, dynamic events) {
-    if (daySelected) {
-      return const Text("test");
-    } else {
-      return ListView.builder(
-          itemCount: events.length,
-          itemBuilder: (BuildContext context, int index) {
-            Event event = events[index];
-            DateTime date = event.fromDate;
-
-            //know if this is an event or a task
-            String eventType;
-
-            if (event.color == 4285774771) {
-              eventType = "Evènement dans";
-            } else {
-              eventType = "Tâche à accomplir dans";
-            }
-
-            //getting the difference between now time and the event time
-            int difference = date.difference(DateTime.now()).inMinutes;
-
-            String time = getTimeString(difference);
-            final String stringDate;
-
-            //convert date to string for comparisons
-            String dateNow =
-                DateFormat("d MMMM", "fr_FR").format(DateTime.now());
-            String eventDate = DateFormat("d MMMM", "fr_FR").format(date);
-
-            //today in the future
-            if (!time.contains('-') && dateNow == eventDate) {
-              stringDate = "$eventType $time";
-            }
-            //today in the past
-            else if (time.contains('-') && dateNow == eventDate) {
-              String formattedDate =
-                  DateFormat("HH : mm", 'fr_FR').format(date);
-              stringDate = "Aujourd'hui, $formattedDate";
-            } /*else if (!time.contains('-') && daySelected == false) {
-                  stringDate = "Evènement dans $time futur";
-                } */
-            //date in the future or past but not today
-            else {
-              String formattedDate =
-                  DateFormat("d MMMM à HH:mm", 'fr_FR').format(date);
-              stringDate = "Le $formattedDate";
-            }
-
-            return ListTile(
-              title: Text(event.title),
-              subtitle: Text(stringDate),
-              //onTap: () => Get.to(() => EventDetails(event: event)),
-              onTap: () => showModalEventDetails(event),
-            );
-          });
-    }
-  }
-
-  showModalEventDetails(event) => showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            elevation: 16,
-            child: EventDetails(event: event));
-      });
-
-  showModalTask() => showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            elevation: 16,
-            child: AddEventTask(selectedDate: _selectedDay));
-      });
 }

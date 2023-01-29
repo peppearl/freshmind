@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/pages/calendar.dart';
-import 'package:freshmind/pages/calendar2.dart';
-import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class FunctionnalitiesPage extends StatefulWidget {
