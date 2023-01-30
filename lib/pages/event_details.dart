@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freshmind/events/data/models/event.dart';
-import 'package:freshmind/events/data/services/event_firestore_service.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,8 +109,11 @@ class EventDetails extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Color(event.color)),
                   ),
-                  onTap: () {
-                    eventDBS.removeItem(event.id);
+                  onTap: () async {
+                    await FirebaseFirestore.instance
+                        .collection('events')
+                        .doc(event.id)
+                        .delete();
                     Get.back();
                   },
                 ),

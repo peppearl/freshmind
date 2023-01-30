@@ -6,7 +6,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
-import 'package:freshmind/components/input_field_icon.dart';
 import 'package:freshmind/events/data/models/event.dart';
 import 'package:freshmind/utils.dart';
 import 'package:get/get.dart';
@@ -34,7 +33,13 @@ class _AddEventState extends State<AddEvent> {
       beginTimeController = TextEditingController(),
       endTimeController = TextEditingController();
 
+  //to get current user id + email
   final FirebaseAuth auth = FirebaseAuth.instance;
+
+  //create added users array
+  List<String> _addedUsers = [];
+  String? lastValue = '';
+  FocusNode focus = FocusNode();
 
   @override
   void initState() {
@@ -45,7 +50,7 @@ class _AddEventState extends State<AddEvent> {
       fromDate = widget.event!.fromDate;
       toDate = widget.event!.toDate;
       titleController.text = widget.event!.title;
-      addPersonsController.text = widget.event!.addedUsers;
+      _addedUsers = widget.event!.addedUsers;
     } else {
       fromDate = widget.selectedDate!;
       toDate = fromDate.add(const Duration(hours: 1));
@@ -56,6 +61,12 @@ class _AddEventState extends State<AddEvent> {
     endDateController.text = Utils.toDate(toDate);
     beginTimeController.text = Utils.toTime(fromDate);
     endTimeController.text = Utils.toTime(toDate);
+
+    focus.addListener(() {
+      if (!focus.hasFocus) {
+        updateEmails();
+      }
+    });
   }
 
   @override
@@ -72,53 +83,131 @@ class _AddEventState extends State<AddEvent> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const SafeArea(child: AppBarTitle(title: "Ajouter un évènement")),
             Container(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              height: 580,
-              child: ListView(
-                children: [
-                  FormBuilder(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyInputField(
-                          fieldName: "title",
-                          controller: titleController,
-                          title: "Nom de l'évènement",
-                          hint: "Nom de l'évènement",
-                          textColor: const Color(0xFF73BBB3),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Champ vide";
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        buildDateTimePickers(),
-                        const SizedBox(height: 20),
-                        InputFieldIcon(
-                            fieldName: "add_person",
-                            iconColor: const Color(0xFF73BBB3),
-                            controller: addPersonsController,
-                            title: "Ajouter des personnes à l'évènement",
-                            hint: "Invite une personne",
-                            textColor: const Color(0xFF73BBB3)),
-                        const SizedBox(height: 20),
-                        Center(
-                          child: ButtonWhiteText(
-                              backgroundColor: const Color(0xFF73BBB3),
-                              title: "Ajouter l'évènement",
-                              elevation: 0,
-                              onPressed: () => saveForm()),
-                        )
-                      ],
+              child: FormBuilder(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MyInputField(
+                      fieldName: "title",
+                      controller: titleController,
+                      title: "Nom de l'évènement",
+                      hint: "Nom de l'évènement",
+                      textColor: const Color(0xFF73BBB3),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Champ vide";
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    buildDateTimePickers(),
+                    const SizedBox(height: 20),
+                    Container(
+                      margin: const EdgeInsets.only(top: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Ajouter des personnes à l'évènement",
+                            style: TextStyle(color: Color(0xFF73BBB3)),
+                          ),
+                          const SizedBox(height: 12),
+                          FormBuilderTextField(
+                            keyboardType: TextInputType.emailAddress,
+                            focusNode: focus,
+                            name: "add_person",
+                            controller: addPersonsController,
+                            cursorColor: const Color(0xFF8B8B8B),
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              icon: const Icon(
+                                Icons.person_add_outlined,
+                                color: Color(0xFF73BBB3),
+                              ),
+                              labelText: "Invite une personne",
+                              labelStyle: const TextStyle(
+                                color: Color(0xFF8B8B8B),
+                              ),
+                              focusColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey,
+                                  width: 0,
+                                  //style: BorderStyle.none,
+                                ),
+                              ),
+                            ),
+                            onChanged: (String? val) {
+                              setState(() {
+                                if (val != lastValue) {
+                                  lastValue = val;
+                                  if (val!.endsWith(' ') &&
+                                      validateEmail(val.trim())) {
+                                    if (!_addedUsers.contains(val.trim())) {
+                                      _addedUsers.add(val.trim());
+                                      setEmails(_addedUsers);
+                                    }
+                                    addPersonsController.clear();
+                                  } else if (val.endsWith(' ') &&
+                                      !validateEmail(val.trim())) {
+                                    addPersonsController.clear();
+                                  }
+                                }
+                              });
+                            },
+                            onEditingComplete: () {
+                              updateEmails();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ..._addedUsers
+                        .map(
+                          (email) => Chip(
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.black,
+                              child: Text(
+                                email.substring(0, 1),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            labelPadding: const EdgeInsets.all(4),
+                            backgroundColor:
+                                const Color.fromARGB(255, 39, 182, 192),
+                            label: Text(
+                              email,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white),
+                            ),
+                            onDeleted: () => {
+                              setState(() {
+                                _addedUsers
+                                    .removeWhere((element) => email == element);
+                              })
+                            },
+                          ),
+                        )
+                        .toList(),
+                    Center(
+                      child: ButtonWhiteText(
+                          backgroundColor: const Color(0xFF73BBB3),
+                          title: "Ajouter l'évènement",
+                          elevation: 0,
+                          onPressed: () => saveForm()),
+                    )
+                  ],
+                ),
               ),
             ),
             RichText(
@@ -372,10 +461,35 @@ class _AddEventState extends State<AddEvent> {
     }
   }
 
+  updateEmails() {
+    setState(() {
+      if (validateEmail(addPersonsController.text)) {
+        if (!_addedUsers.contains(addPersonsController.text)) {
+          _addedUsers.add(addPersonsController.text.trim());
+          setEmails(_addedUsers);
+        }
+        addPersonsController.clear();
+      } else if (!validateEmail(addPersonsController.text)) {
+        addPersonsController.clear();
+      }
+    });
+  }
+
+  setEmails(List<String> emails) {
+    _addedUsers = emails;
+  }
+
+  bool validateEmail(String value) {
+    String pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = RegExp(pattern);
+    return regex.hasMatch(value);
+  }
+
   void saveForm() async {
     final isValid = _formKey.currentState!.validate();
-    if (addPersonsController.text.isEmpty) {
-      addPersonsController.text = "";
+    if (_addedUsers.isEmpty) {
+      _addedUsers = [""];
     }
 
     //get user id of the current user
@@ -388,7 +502,7 @@ class _AddEventState extends State<AddEvent> {
         "fromDate":
             (fromDate).millisecondsSinceEpoch, //transform date to timestamp
         "toDate": (toDate).millisecondsSinceEpoch, //transform date to timestamp
-        "addedUsers": addPersonsController.text,
+        "addedUsers": _addedUsers,
         "color": 0xFF73BBB3,
         "user_id": userid.toString(),
       });

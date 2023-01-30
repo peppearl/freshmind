@@ -6,7 +6,7 @@ class Event {
   final DateTime fromDate;
   final DateTime toDate;
   final String userId;
-  final String addedUsers;
+  final List<String> addedUsers;
   final int color;
 
   Event(
@@ -28,7 +28,7 @@ class Event {
       toDate: DateTime.fromMillisecondsSinceEpoch(data['toDate']),
       userId: data['user_id'],
       color: data['color'],
-      addedUsers: data['addedUsers'],
+      addedUsers: List.from(data['addedUsers']),
     );
   }
 
