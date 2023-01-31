@@ -51,8 +51,9 @@ class _CalendarState extends State<Calendar>
   _loadFirestoreEvents() async {
     final firstDay =
         DateTime(_focusedDay.year, _focusedDay.month, 1).millisecondsSinceEpoch;
-    final lastDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 0)
-        .millisecondsSinceEpoch;
+    final lastDay =
+        DateTime(_focusedDay.year, _focusedDay.month + 1, 0, 23, 59, 59)
+            .millisecondsSinceEpoch;
     _events = {};
 
     //get user id of the current user
@@ -60,7 +61,7 @@ class _CalendarState extends State<Calendar>
     final userid = user?.uid;
 
     //get all events of current user
-    final snap = await FirebaseFirestore.instance
+    final allEvents = await FirebaseFirestore.instance
         .collection('events')
         .where('fromDate', isGreaterThanOrEqualTo: firstDay)
         .where('fromDate', isLessThanOrEqualTo: lastDay)
@@ -70,7 +71,23 @@ class _CalendarState extends State<Calendar>
             toFirestore: (event, options) => event.toFirestore())
         .get();
 
-    for (var doc in snap.docs) {
+        //get events of other users that added current user to their event
+    final sharedEvents = await FirebaseFirestore.instance
+        .collection('events')
+        .where('fromDate', isGreaterThanOrEqualTo: firstDay)
+        .where('fromDate', isLessThanOrEqualTo: lastDay)
+        .where('addedUsers', arrayContains: user?.email.toString())
+        .withConverter(
+            fromFirestore: Event.fromFirestore,
+            toFirestore: (event, options) => event.toFirestore())
+        .get();
+
+    final allEventsArray = allEvents.docs;
+    final sharedEventsArray = sharedEvents.docs;
+
+    var eventsArray = [...allEventsArray, ...sharedEventsArray];
+
+    for (var doc in eventsArray) {
       final event = doc.data();
       final day = DateTime.utc(
           event.fromDate.year, event.fromDate.month, event.fromDate.day);
@@ -79,8 +96,9 @@ class _CalendarState extends State<Calendar>
       }
       _events[day]!.add(event);
     }
+    print(_events);
 
-    final allData = snap.docs.map((doc) => doc.data()).toList();
+    final allData = eventsArray.map((doc) => doc.data()).toList();
     _allEvents = allData;
 
     setState(() {});

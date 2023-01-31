@@ -71,14 +71,6 @@ class _AddEventTaskState extends State<AddEventTask> {
   }
 
   @override
-  void dispose() {
-    titleController.dispose();
-    addPersonsController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -497,7 +489,7 @@ class _AddEventTaskState extends State<AddEventTask> {
     final User? user = auth.currentUser;
     final userid = user?.uid;
 
-    if (isValid) {
+    if (isValid && widget.event == null) {
       await FirebaseFirestore.instance.collection('events').add({
         "title": titleController.text,
         "fromDate":
@@ -508,7 +500,23 @@ class _AddEventTaskState extends State<AddEventTask> {
         "user_id": userid.toString(),
       });
       if (mounted) {
-        Navigator.pop<bool>(context, true);
+        Get.back();
+      }
+    } else {
+      //edit and update existing event
+      await FirebaseFirestore.instance
+          .collection('events')
+          .doc(widget.event!.id)
+          .update({
+        "title": titleController.text,
+        "fromDate":
+            (fromDate).millisecondsSinceEpoch, //transform date to timestamp
+        "toDate": (toDate).millisecondsSinceEpoch, //transform date to timestamp
+        "addedUsers": _addedUsers,
+        "color": 0xFFB97C7B,
+      });
+      if (mounted) {
+        Get.back();
       }
     }
 /*
