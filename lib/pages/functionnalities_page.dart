@@ -36,139 +36,181 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                         crossAxisCellCount: 4,
                         mainAxisCellCount: 2,
                         child: GridTile(
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 185, 124, 123),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.fromLTRB(
-                                        50, 30, 50, 30)),
-                                //onPressed: () => Get.to(() => const Calendar()),
-                                onPressed: () =>
+                            child: GestureDetector(
+                                child: Container(
+                                    width: 120,
+                                    height: 40,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/mon-planning-bouton.png"),
+                                          fit: BoxFit.cover),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.calendar_month,
+                                            size: 50, color: Colors.white),
+                                        Text("Mon planning",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                      ],
+                                    ) // button text
+                                    ),
+                                onTap: () =>
                                     PersistentNavBarNavigator.pushNewScreen(
                                         context,
                                         screen: const Calendar(),
                                         //screen: const Calendar2(),
-                                        withNavBar: true),
-                                child: Center(
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.calendar_month,
-                                        size: 50,
-                                      ),
-                                      Text("Mon planning",
-                                          style: TextStyle(
-                                              fontSize: 24, height: 1.5))
-                                    ],
-                                  ),
-                                ))),
+                                        withNavBar: true))),
                       ),
                       StaggeredGridTile.count(
                         crossAxisCellCount: 2,
-                        mainAxisCellCount: 3,
-                        child: GridTile(
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                    backgroundColor: const Color(0xFF73BBB3),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 50, 20, 50)),
-                                onPressed: () {},
-                                child: Center(
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.local_grocery_store_outlined,
-                                        size: 50,
-                                      ),
-                                      Text("Listes de courses",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 24, height: 1.5))
-                                    ],
-                                  ),
-                                ))),
-                      ),
-                      StaggeredGridTile.count(
-                        crossAxisCellCount: 2,
-                        mainAxisCellCount: 3,
-                        child: GridTile(
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 185, 124, 123),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 50, 10, 50)),
-                                onPressed: () {},
-                                child: Center(
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.format_list_bulleted,
-                                        size: 50,
-                                      ),
-                                      Text("To do lists partagées",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 24, height: 1.5))
-                                    ],
-                                  ),
-                                ))),
-                      ),
-                      StaggeredGridTile.count(
-                        crossAxisCellCount: 4,
                         mainAxisCellCount: 2,
                         child: GridTile(
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                    backgroundColor: const Color(0xFF73BBB3),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.fromLTRB(
-                                        50, 30, 50, 30)),
-                                onPressed: () {},
-                                child: Center(
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.menu_book_rounded,
-                                        size: 50,
+                            child: GestureDetector(
+                                child: Container(
+                                    width: 120,
+                                    height: 40,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
                                       ),
-                                      Text("Idées de recette",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 24, height: 1.5))
-                                    ],
-                                  ),
-                                ))),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/bien-etre.png"),
+                                          fit: BoxFit.cover),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.self_improvement_rounded,
+                                            size: 50, color: Colors.white),
+                                        Text("Mes astuces",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                        Text("bien-être",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                      ],
+                                    ) // button text
+                                    ),
+                                onTap: () => {})),
                       ),
                       StaggeredGridTile.count(
                         crossAxisCellCount: 2,
                         mainAxisCellCount: 3,
                         child: GridTile(
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 185, 124, 123),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 70, 20, 70)),
-                                onPressed: () {},
-                                child: Center(
-                                  child: Column(
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.self_improvement_rounded,
-                                        size: 50,
+                            child: GestureDetector(
+                                child: Container(
+                                    width: 120,
+                                    height: 40,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
                                       ),
-                                      Text("Bien-être",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 24, height: 1.5))
-                                    ],
-                                  ),
-                                ))),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/listes-course.png"),
+                                          fit: BoxFit.cover),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.shopping_basket_rounded,
+                                            size: 50, color: Colors.white),
+                                        Text("Mes listes",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                        Text("de course",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                      ],
+                                    ) // button text
+                                    ),
+                                onTap: () => {})),
+                      ),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 3,
+                        child: GridTile(
+                            child: GestureDetector(
+                                child: Container(
+                                    width: 120,
+                                    height: 40,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/recette.png"),
+                                          fit: BoxFit.cover),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.menu_book_rounded,
+                                            size: 50, color: Colors.white),
+                                        Text("Mes recettes",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                      ],
+                                    ) // button text
+                                    ),
+                                onTap: () => {})),
+                      ),
+                      StaggeredGridTile.count(
+                        crossAxisCellCount: 2,
+                        mainAxisCellCount: 2,
+                        child: GridTile(
+                            child: GestureDetector(
+                                child: Container(
+                                    width: 120,
+                                    height: 40,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/to-do-list.png"),
+                                          fit: BoxFit.cover),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.checklist_rounded,
+                                            size: 50, color: Colors.white),
+                                        Text("Mes to do lists",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                height: 1.5,
+                                                color: Colors.white)),
+                                      ],
+                                    ) // button text
+                                    ),
+                                onTap: () => {})),
                       ),
                     ],
                   ),
