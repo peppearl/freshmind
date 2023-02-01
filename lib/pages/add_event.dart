@@ -134,7 +134,6 @@ class _AddEventState extends State<AddEvent> {
                                 borderSide: const BorderSide(
                                   color: Colors.grey,
                                   width: 0,
-                                  //style: BorderStyle.none,
                                 ),
                               ),
                             ),
@@ -255,8 +254,7 @@ class _AddEventState extends State<AddEvent> {
                   onTap: () async {
                     await pickFromDateTime(pickDate: true);
                     fromDateController.text = Utils.toDate(fromDate);
-                    //in case from date is after to date
-                    endDateController.text = Utils.toDate(toDate);
+
                     setState(() {});
                   },
                   readOnly: true,
@@ -291,10 +289,7 @@ class _AddEventState extends State<AddEvent> {
                   ),
                   onTap: () async {
                     await pickFromDateTime(pickDate: false);
-                    if (toDate.isBefore(fromDate)) {
-                      endTimeController.text =
-                          Utils.toTime(fromDate.add(const Duration(hours: 1)));
-                    }
+                    endTimeController.text = Utils.toTime(toDate);
                     beginTimeController.text = Utils.toTime(fromDate);
                     setState(() {});
                   },
@@ -390,8 +385,8 @@ class _AddEventState extends State<AddEvent> {
     if (date == null) return;
 
     if (date.isAfter(toDate)) {
-      toDate =
-          DateTime(date.year, date.month, date.day, toDate.hour, toDate.minute);
+      toDate = DateTime(date.year, date.month, date.day,
+          date.add(const Duration(hours: 1)).hour, date.minute);
     }
 
     setState(() => fromDate = date);
@@ -516,29 +511,5 @@ class _AddEventState extends State<AddEvent> {
         Get.back();
       }
     }
-
-/*
-    if (isValid) {
-      final data = Map<String, dynamic>.from(_formKey.currentState!.value);
-
-      data["fromDate"] =
-          (fromDate).millisecondsSinceEpoch; //transform date to timestamp
-      data["toDate"] =
-          (toDate).millisecondsSinceEpoch; //transform date to timestamp
-      data['title'] = titleController.text;
-      data['addedUsers'] = addPersonsController.text;
-      data['color'] = 0xFF73BBB3;
-      if (widget.event == null) {
-        data['user_id'] = userid.toString();
-
-        //await eventDBS.create(data);
-      } else {
-        //edit and update event
-        //await eventDBS.updateData(widget.event!.id, data);
-      }
-
-      Get.back();
-    }
-    */
   }
 }

@@ -135,7 +135,6 @@ class _AddEventTaskState extends State<AddEventTask> {
                                 borderSide: const BorderSide(
                                   color: Colors.grey,
                                   width: 0,
-                                  //style: BorderStyle.none,
                                 ),
                               ),
                             ),
@@ -292,10 +291,7 @@ class _AddEventTaskState extends State<AddEventTask> {
                   ),
                   onTap: () async {
                     await pickFromDateTime(pickDate: false);
-                    if (toDate.isBefore(fromDate)) {
-                      endTimeController.text =
-                          Utils.toTime(fromDate.add(const Duration(hours: 1)));
-                    }
+                    endTimeController.text = Utils.toTime(toDate);
                     beginTimeController.text = Utils.toTime(fromDate);
                     setState(() {});
                   },
@@ -391,8 +387,8 @@ class _AddEventTaskState extends State<AddEventTask> {
     if (date == null) return;
 
     if (date.isAfter(toDate)) {
-      toDate =
-          DateTime(date.year, date.month, date.day, toDate.hour, toDate.minute);
+      toDate = DateTime(date.year, date.month, date.day,
+          date.add(const Duration(hours: 1)).hour, date.minute);
     }
 
     setState(() => fromDate = date);
@@ -481,9 +477,6 @@ class _AddEventTaskState extends State<AddEventTask> {
 
   Future saveForm() async {
     final isValid = _formKey.currentState!.validate();
-    if (_addedUsers.isEmpty) {
-      _addedUsers = [""];
-    }
 
     //get user id of the current user
     final User? user = auth.currentUser;
@@ -519,27 +512,5 @@ class _AddEventTaskState extends State<AddEventTask> {
         Get.back();
       }
     }
-/*
-    if (isValid) {
-      final data = Map<String, dynamic>.from(_formKey.currentState!.value);
-
-      data['title'] = titleController.text;
-      data['fromDate'] = fromDate;
-      data['toDate'] = toDate;
-      data['addedUsers'] = addPersonsController.text;
-      data['color'] = 0xFFB97C7B;
-      if (widget.event == null) {
-        data['user_id'] = userid.toString();
-
-        await eventDBS.create(data);
-      } else {
-        //edit and update event
-        await eventDBS.updateData(widget.event!.id, data);
-      }
-
-      await eventDBS.create(data);
-      Get.back();
-    }
-    */
   }
 }
