@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freshmind/components/get_app_bar.dart';
+import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/pages/functionnalities_page.dart';
 import 'package:freshmind/pages/profile.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -35,19 +36,19 @@ class _HomeState extends State<Home> {
   List<PersistentBottomNavBarItem> _navBarItems() {
     return [
       PersistentBottomNavBarItem(
-          icon: const Icon(Icons.home_rounded),
+          icon: const Icon(CustomIcons.home_custom),
           inactiveColorPrimary: const Color.fromARGB(255, 169, 169, 169),
           activeColorPrimary: const Color.fromARGB(255, 101, 101, 101)),
       PersistentBottomNavBarItem(
-          icon: const Icon(Icons.search_rounded),
+          icon: const Icon(CustomIcons.search_custom),
           inactiveColorPrimary: const Color.fromARGB(255, 169, 169, 169),
           activeColorPrimary: const Color.fromARGB(255, 101, 101, 101)),
       PersistentBottomNavBarItem(
-          icon: const Icon(Icons.notifications_rounded),
+          icon: const Icon(CustomIcons.notifications_custom),
           inactiveColorPrimary: const Color.fromARGB(255, 169, 169, 169),
           activeColorPrimary: const Color.fromARGB(255, 101, 101, 101)),
       PersistentBottomNavBarItem(
-          icon: const Icon(Icons.person_rounded),
+          icon: const Icon(CustomIcons.profile_custom),
           inactiveColorPrimary: const Color.fromARGB(255, 169, 169, 169),
           activeColorPrimary: const Color.fromARGB(255, 101, 101, 101)),
     ];

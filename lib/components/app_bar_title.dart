@@ -11,8 +11,8 @@ class AppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      padding: const EdgeInsets.only(bottom: 5, top: 10),
+      height: 70,
+      padding: const EdgeInsets.only(bottom: 5, top: 20),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/events/data/models/event.dart';
+import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:freshmind/pages/add_event_task.dart';
 import 'package:freshmind/pages/event_details.dart';
@@ -43,6 +44,9 @@ class _CalendarState extends State<Calendar>
   late Map<DateTime, List<Event>> _events;
   late List<Event> _allEvents = [];
 
+  //floating button visibility
+  late bool fabVisibility;
+
   int getHashCode(DateTime key) {
     return key.day * 1000000 + key.month * 10000 + key.year;
   }
@@ -71,7 +75,7 @@ class _CalendarState extends State<Calendar>
             toFirestore: (event, options) => event.toFirestore())
         .get();
 
-        //get events of other users that added current user to their event
+    //get events of other users that added current user to their event
     final sharedEvents = await FirebaseFirestore.instance
         .collection('events')
         .where('fromDate', isGreaterThanOrEqualTo: firstDay)
@@ -96,7 +100,6 @@ class _CalendarState extends State<Calendar>
       }
       _events[day]!.add(event);
     }
-    print(_events);
 
     final allData = eventsArray.map((doc) => doc.data()).toList();
     _allEvents = allData;
@@ -110,7 +113,7 @@ class _CalendarState extends State<Calendar>
 
     //calendar
     _focusedDay = DateTime.now();
-    _firstDay = DateTime.now();
+    _firstDay = DateTime.now().subtract(const Duration(days: 1000));
     _lastDay = _lastDay = DateTime.now().add(const Duration(days: 1000));
     _selectedDay = DateTime.now();
 
@@ -128,6 +131,9 @@ class _CalendarState extends State<Calendar>
       equals: isSameDay,
       hashCode: getHashCode,
     );
+
+    //floating button visibility
+    fabVisibility = true;
   }
 
   //get minutes in hh:mm
@@ -153,6 +159,17 @@ class _CalendarState extends State<Calendar>
     return _allEvents;
   }
 
+  //display of fab
+  bool _fabVisibility() {
+    DateTime dateNow =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    if (_selectedDay.isBefore(dateNow)) {
+      return fabVisibility = false;
+    } else {
+      return fabVisibility = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,7 +181,6 @@ class _CalendarState extends State<Calendar>
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              //mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   color: const Color(0xFF73BBB3),
@@ -263,15 +279,64 @@ class _CalendarState extends State<Calendar>
                           stringDate = "Le $formattedDate";
                         }
 
-                        return ListTile(
-                          title: Text(event.title),
-                          subtitle: Text(stringDate),
-                          //onTap: () => Get.to(() => EventDetails(event: event)),
-                          onTap: () async {
-                            await showModalEventDetails(event);
-                            _loadFirestoreEvents();
-                          },
-                        );
+                        return GestureDetector(
+                            child: Container(
+                                height: 140,
+                                margin:
+                                    const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                padding:
+                                    const EdgeInsets.fromLTRB(44, 26, 15, 15),
+                                decoration: BoxDecoration(
+                                  color: Color(event.color),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(event.title,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            height: 1.5,
+                                            color: Colors.white)),
+                                    const SizedBox(
+                                      width: 117,
+                                      child: Divider(
+                                          color: Colors.white, thickness: 1),
+                                    ),
+                                    Text(stringDate,
+                                        style: const TextStyle(
+                                            fontSize: 10,
+                                            height: 1.5,
+                                            color: Colors.white)),
+                                    Row(children: [
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              CustomIcons.checked_custom,
+                                              size: 23,
+                                              color: Colors.white)),
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              CustomIcons.share_custom,
+                                              size: 23,
+                                              color: Colors.white)),
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              CustomIcons.delete_custom,
+                                              size: 23,
+                                              color: Colors.white))
+                                    ])
+                                  ],
+                                ) // button text
+                                ),
+                            onTap: () async {
+                              await showModalEventDetails(event);
+                              _loadFirestoreEvents();
+                            });
                       }),
                     ],
                   ),
@@ -320,15 +385,64 @@ class _CalendarState extends State<Calendar>
                           stringDate = "Le $formattedDate";
                         }
 
-                        return ListTile(
-                          title: Text(event.title),
-                          subtitle: Text(stringDate),
-                          //onTap: () => Get.to(() => EventDetails(event: event)),
-                          onTap: () async {
-                            await showModalEventDetails(event);
-                            _loadFirestoreEvents();
-                          },
-                        );
+                        return GestureDetector(
+                            child: Container(
+                                height: 140,
+                                margin:
+                                    const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                padding:
+                                    const EdgeInsets.fromLTRB(44, 26, 15, 15),
+                                decoration: BoxDecoration(
+                                  color: Color(event.color),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(event.title,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            height: 1.5,
+                                            color: Colors.white)),
+                                    const SizedBox(
+                                      width: 117,
+                                      child: Divider(
+                                          color: Colors.white, thickness: 1),
+                                    ),
+                                    Text(stringDate,
+                                        style: const TextStyle(
+                                            fontSize: 10,
+                                            height: 1.5,
+                                            color: Colors.white)),
+                                    Row(children: [
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              CustomIcons.checked_custom,
+                                              size: 23,
+                                              color: Colors.white)),
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              CustomIcons.share_custom,
+                                              size: 23,
+                                              color: Colors.white)),
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              CustomIcons.delete_custom,
+                                              size: 23,
+                                              color: Colors.white))
+                                    ])
+                                  ],
+                                ) // button text
+                                ),
+                            onTap: () async {
+                              await showModalEventDetails(event);
+                              _loadFirestoreEvents();
+                            });
                       }),
                     ],
                   )
@@ -339,6 +453,7 @@ class _CalendarState extends State<Calendar>
         ],
       )),
       floatingActionButton: SpeedDial(
+        visible: _fabVisibility(),
         icon: Icons.add,
         activeIcon: Icons.close,
         spacing: 3,
@@ -351,9 +466,9 @@ class _CalendarState extends State<Calendar>
         children: [
           SpeedDialChild(
               //speed dial child
-              child: const Icon(Icons.accessibility),
-              backgroundColor: const Color(0xFF73BBB3),
-              foregroundColor: Colors.white,
+              child: const Icon(Icons.event_rounded,
+                  color: Color(0xFF73BBB3), size: 44),
+              backgroundColor: Colors.transparent,
               label: 'Evènement',
               labelBackgroundColor: Colors.transparent,
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
@@ -366,9 +481,9 @@ class _CalendarState extends State<Calendar>
               },
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
           SpeedDialChild(
-              child: const Icon(Icons.brush),
-              backgroundColor: const Color.fromARGB(255, 185, 124, 123),
-              foregroundColor: Colors.white,
+              child: const Icon(CustomIcons.checked_custom,
+                  color: Color.fromARGB(255, 185, 124, 123), size: 44),
+              backgroundColor: Colors.transparent,
               labelBackgroundColor: Colors.transparent,
               label: 'Tâches',
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),

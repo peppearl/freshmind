@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freshmind/components/app_bar_title.dart';
+import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/pages/calendar.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -53,8 +54,9 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
-                                        Icon(Icons.calendar_month,
+                                        Icon(CustomIcons.planning_custom,
                                             size: 50, color: Colors.white),
+                                        SizedBox(height: 10),
                                         Text("Mon planning",
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -91,8 +93,9 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
-                                        Icon(Icons.self_improvement_rounded,
+                                        Icon(CustomIcons.selfcare_custom,
                                             size: 50, color: Colors.white),
+                                        SizedBox(height: 10),
                                         Text("Mes astuces",
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -129,8 +132,9 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
-                                        Icon(Icons.shopping_basket_rounded,
+                                        Icon(CustomIcons.groceries_custom,
                                             size: 50, color: Colors.white),
+                                        SizedBox(height: 10),
                                         Text("Mes listes",
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -167,8 +171,9 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
-                                        Icon(Icons.menu_book_rounded,
+                                        Icon(CustomIcons.recipes_custom,
                                             size: 50, color: Colors.white),
+                                        SizedBox(height: 10),
                                         Text("Mes recettes",
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -202,6 +207,7 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       children: const [
                                         Icon(Icons.checklist_rounded,
                                             size: 50, color: Colors.white),
+                                        SizedBox(height: 10),
                                         Text("Mes to do lists",
                                             style: TextStyle(
                                                 fontSize: 16,
