@@ -88,9 +88,18 @@ class EventDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 0, right: 0)),
                 onPressed: () {},
                 child: MaterialButton(
-                  onPressed: () => Get.to(() => AddEvent(
-                        event: event,
-                      )),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddEvent(
+                                event: event,
+                              )),
+                    ).then((result) {
+                      Navigator.of(context).pop();
+                    });
+                  },
+                  //() => Get.to(() => AddEvent(event: event,)),
                   minWidth: 200.0,
                   height: 42.0,
                   child: Text(

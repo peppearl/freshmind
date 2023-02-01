@@ -190,7 +190,6 @@ class _CalendarState extends State<Calendar>
                     focusedDay: _focusedDay,
                     firstDay: _firstDay,
                     lastDay: _lastDay,
-                    //eventLoader: _getEventsForTheDay,
                     locale: 'fr',
                     calendarStyle: const CalendarStyle(
                       disabledTextStyle: TextStyle(color: Color(0xFF629E98)),
@@ -324,7 +323,16 @@ class _CalendarState extends State<Calendar>
                                               size: 23,
                                               color: Colors.white)),
                                       IconButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('events')
+                                                .doc(event.id)
+                                                .delete();
+                                            Future.delayed(Duration.zero).then(
+                                                (value) => showSnackBar(context,
+                                                    "${event.title} supprimé"));
+                                            _loadFirestoreEvents();
+                                          },
                                           icon: const Icon(
                                               CustomIcons.delete_custom,
                                               size: 23,
@@ -430,11 +438,20 @@ class _CalendarState extends State<Calendar>
                                               size: 23,
                                               color: Colors.white)),
                                       IconButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            await FirebaseFirestore.instance
+                                                .collection('events')
+                                                .doc(event.id)
+                                                .delete();
+                                            _loadFirestoreEvents();
+                                            Future.delayed(Duration.zero).then(
+                                                (value) => showSnackBar(context,
+                                                    "${event.title} supprimé"));
+                                          },
                                           icon: const Icon(
                                               CustomIcons.delete_custom,
                                               size: 23,
-                                              color: Colors.white))
+                                              color: Colors.white)),
                                     ])
                                   ],
                                 ) // button text
@@ -540,4 +557,12 @@ class _CalendarState extends State<Calendar>
             elevation: 16,
             child: EventDetails(event: event));
       });
+
+  void showSnackBar(BuildContext context, String text) {
+    final snackBar = SnackBar(
+        content: Text(text),
+        duration: const Duration(seconds: 3),
+        backgroundColor: const Color.fromARGB(255, 185, 124, 123));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }

@@ -42,6 +42,9 @@ class _AddEventTaskState extends State<AddEventTask> {
   String? lastValue = '';
   FocusNode focus = FocusNode();
 
+  //add or edit word
+  String eventTask = '';
+
   @override
   void initState() {
     super.initState();
@@ -52,9 +55,11 @@ class _AddEventTaskState extends State<AddEventTask> {
       toDate = widget.event!.toDate;
       titleController.text = widget.event!.title;
       _addedUsers = widget.event!.addedUsers;
+      eventTask = "Modifier";
     } else {
       fromDate = widget.selectedDate!;
       toDate = fromDate.add(const Duration(hours: 1));
+      eventTask = "Ajouter";
     }
 
     //initialize date and time to today's date + 1 hour
@@ -78,7 +83,7 @@ class _AddEventTaskState extends State<AddEventTask> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SafeArea(child: AppBarTitle(title: "Ajouter une tâche")),
+            SafeArea(child: AppBarTitle(title: "$eventTask une tâche")),
             Container(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
               child: FormBuilder(
@@ -194,7 +199,7 @@ class _AddEventTaskState extends State<AddEventTask> {
                     Center(
                       child: ButtonWhiteText(
                           backgroundColor: const Color(0xFFB97C7B),
-                          title: "Ajouter la tâche",
+                          title: "$eventTask la tâche",
                           elevation: 0,
                           onPressed: () => saveForm()),
                     )
@@ -311,7 +316,7 @@ class _AddEventTaskState extends State<AddEventTask> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "à",
+                  "au",
                   style: TextStyle(color: Color(0xFF73BBB3)),
                 ),
                 FormBuilderTextField(
