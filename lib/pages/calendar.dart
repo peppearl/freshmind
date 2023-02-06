@@ -240,11 +240,14 @@ class _CalendarState extends State<Calendar>
 
                         //know if this is an event or a task
                         String eventType;
+                        String eventImage;
 
                         if (event.color == 4285774771) {
                           eventType = "Evènement dans";
+                          eventImage = "assets/images/event-background.png";
                         } else {
                           eventType = "Tâche à accomplir dans";
+                          eventImage = "assets/images/task-background.png";
                         }
 
                         //getting the difference between now time and the event time
@@ -286,11 +289,12 @@ class _CalendarState extends State<Calendar>
                                 padding:
                                     const EdgeInsets.fromLTRB(44, 26, 15, 15),
                                 decoration: BoxDecoration(
-                                  color: Color(event.color),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    image: DecorationImage(
+                                        image: AssetImage(eventImage),
+                                        fit: BoxFit.cover)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -355,11 +359,14 @@ class _CalendarState extends State<Calendar>
 
                         //know if this is an event or a task
                         String eventType;
+                        String eventImage;
 
                         if (event.color == 4285774771) {
                           eventType = "Evènement dans";
+                          eventImage = "assets/images/event-background.png";
                         } else {
                           eventType = "Tâche à accomplir dans";
+                          eventImage = "assets/images/task-background.png";
                         }
 
                         //getting the difference between now time and the event time
@@ -401,11 +408,12 @@ class _CalendarState extends State<Calendar>
                                 padding:
                                     const EdgeInsets.fromLTRB(44, 26, 15, 15),
                                 decoration: BoxDecoration(
-                                  color: Color(event.color),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    image: DecorationImage(
+                                        image: AssetImage(eventImage),
+                                        fit: BoxFit.cover)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
