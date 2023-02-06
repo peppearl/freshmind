@@ -42,10 +42,16 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           const SizedBox(
             height: 40,
           ),
+          const Image(
+              image: AssetImage('assets/images/freshmind-logo.png'), width: 75),
+          const SizedBox(
+            height: 10,
+          ),
           Text("FRESHMIND",
               style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 30,
+                  fontSize: 37,
+                  letterSpacing: 3,
                   fontWeight: FontWeight.w900)),
           const SizedBox(
             height: 40,
@@ -58,117 +64,151 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           const SizedBox(
             height: 40,
           ),
-          TextFormField(
-            controller: emailController,
-            cursorColor: const Color(0xFF8B8B8B),
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: "Email",
-              labelStyle: const TextStyle(
-                color: Color(0xFF8B8B8B),
-              ),
-              focusColor: Colors.white,
-              fillColor: const Color.fromARGB(127, 235, 252, 250),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.14),
+                  blurRadius: 10,
+                  offset: const Offset(4, 4), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextFormField(
+              controller: emailController,
+              cursorColor: const Color(0xFF8B8B8B),
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                labelText: "Email",
+                labelStyle: const TextStyle(
+                  color: Color(0xFF8B8B8B),
+                ),
+                focusColor: Colors.white,
+                fillColor: const Color(0xFFAFDBD6),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  borderSide: const BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
                 ),
               ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (email) =>
+                  email != null && !EmailValidator.validate(email)
+                      ? "Veuillez indiquer une adresse e-mail valide"
+                      : null,
             ),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (email) =>
-                email != null && !EmailValidator.validate(email)
-                    ? "Veuillez indiquer une adresse e-mail valide"
-                    : null,
           ),
           const SizedBox(height: 18),
-          TextFormField(
-            controller: passwordController,
-            cursorColor: const Color(0xFF8B8B8B),
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: "Mot de passe",
-              labelStyle: const TextStyle(
-                color: Color(0xFF8B8B8B),
-              ),
-              focusColor: Colors.white,
-              fillColor: const Color.fromARGB(127, 235, 252, 250),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.14),
+                  blurRadius: 10,
+                  offset: const Offset(4, 4), // changes position of shadow
                 ),
-              ),
-              suffixIcon: InkWell(
-                onTap: () => setState(
-                  () => passwordVisibility = !passwordVisibility,
-                ),
-                focusNode: FocusNode(skipTraversal: true),
-                child: Icon(
-                  passwordVisibility
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  color: const Color.fromARGB(255, 84, 84, 84),
-                  size: 22,
-                ),
-              ),
+              ],
             ),
-            obscureText: !passwordVisibility,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) => value != null && value.length < 6
-                ? "Le mot de passe doit comporter au moins six caractères"
-                : null,
+            child: TextFormField(
+              controller: passwordController,
+              cursorColor: const Color(0xFF8B8B8B),
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                labelText: "Mot de passe",
+                labelStyle: const TextStyle(
+                  color: Color(0xFF8B8B8B),
+                ),
+                focusColor: Colors.white,
+                fillColor: const Color(0xFFAFDBD6),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  borderSide: const BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
+                ),
+                suffixIcon: InkWell(
+                  onTap: () => setState(
+                    () => passwordVisibility = !passwordVisibility,
+                  ),
+                  focusNode: FocusNode(skipTraversal: true),
+                  child: Icon(
+                    passwordVisibility
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: const Color.fromARGB(255, 84, 84, 84),
+                    size: 22,
+                  ),
+                ),
+              ),
+              obscureText: !passwordVisibility,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) => value != null && value.length < 6
+                  ? "Le mot de passe doit comporter au moins six caractères"
+                  : null,
+            ),
           ),
           const SizedBox(height: 18),
-          TextFormField(
-            controller: confirmPasswordController,
-            cursorColor: const Color(0xFF8B8B8B),
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: "Confirmer le mot de passe",
-              labelStyle: const TextStyle(
-                color: Color(0xFF8B8B8B),
-              ),
-              focusColor: Colors.white,
-              fillColor: const Color.fromARGB(127, 235, 252, 250),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.14),
+                  blurRadius: 10,
+                  offset: const Offset(4, 4), // changes position of shadow
                 ),
-              ),
-              suffixIcon: InkWell(
-                onTap: () => setState(
-                  () => confirmPasswordVisibility = !confirmPasswordVisibility,
-                ),
-                focusNode: FocusNode(skipTraversal: true),
-                child: Icon(
-                  confirmPasswordVisibility
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  color: const Color.fromARGB(255, 84, 84, 84),
-                  size: 22,
-                ),
-              ),
+              ],
             ),
-            obscureText: !confirmPasswordVisibility,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) {
-              if (value != null && value.length < 6) {
-                return "Le mot de passe doit comporter au moins six caractères";
-              } else if (value != passwordController.text) {
-                return "Mots de passe différents";
-              } else {
-                return null;
-              }
-            },
+            child: TextFormField(
+              controller: confirmPasswordController,
+              cursorColor: const Color(0xFF8B8B8B),
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                labelText: "Confirmer le mot de passe",
+                labelStyle: const TextStyle(
+                  color: Color(0xFF8B8B8B),
+                ),
+                focusColor: Colors.white,
+                fillColor: const Color(0xFFAFDBD6),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  borderSide: const BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
+                ),
+                suffixIcon: InkWell(
+                  onTap: () => setState(
+                    () =>
+                        confirmPasswordVisibility = !confirmPasswordVisibility,
+                  ),
+                  focusNode: FocusNode(skipTraversal: true),
+                  child: Icon(
+                    confirmPasswordVisibility
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: const Color.fromARGB(255, 84, 84, 84),
+                    size: 22,
+                  ),
+                ),
+              ),
+              obscureText: !confirmPasswordVisibility,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                if (value != null && value.length < 6) {
+                  return "Le mot de passe doit comporter au moins six caractères";
+                } else if (value != passwordController.text) {
+                  return "Mots de passe différents";
+                } else {
+                  return null;
+                }
+              },
+            ),
           ),
           const SizedBox(height: 20),
           ButtonGreenText(

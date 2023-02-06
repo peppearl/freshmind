@@ -35,10 +35,16 @@ class _LogInWidgetState extends State<LogInWidget> {
           const SizedBox(
             height: 40,
           ),
+          const Image(
+              image: AssetImage('assets/images/freshmind-logo.png'), width: 75),
+          const SizedBox(
+            height: 10,
+          ),
           Text("FRESHMIND",
               style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 30,
+                  fontSize: 37,
+                  letterSpacing: 3,
                   fontWeight: FontWeight.w900)),
           const SizedBox(
             height: 40,
@@ -51,49 +57,71 @@ class _LogInWidgetState extends State<LogInWidget> {
           const SizedBox(
             height: 40,
           ),
-          TextField(
-            controller: emailController,
-            cursorColor: const Color(0xFF8B8B8B),
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: "Email",
-              labelStyle: const TextStyle(
-                color: Color(0xFF8B8B8B),
-              ),
-              focusColor: Colors.white,
-              fillColor: const Color.fromARGB(127, 235, 252, 250),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.14),
+                  blurRadius: 10,
+                  offset: const Offset(4, 4), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextField(
+              controller: emailController,
+              cursorColor: const Color(0xFF8B8B8B),
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                labelText: "Email",
+                labelStyle: const TextStyle(
+                  color: Color(0xFF8B8B8B),
+                ),
+                focusColor: Colors.white,
+                fillColor: const Color(0xFFAFDBD6),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  borderSide: const BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
                 ),
               ),
             ),
           ),
           const SizedBox(height: 18),
-          TextField(
-            controller: passwordController,
-            cursorColor: const Color(0xFF8B8B8B),
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelText: "Mot de passe",
-              labelStyle: const TextStyle(
-                color: Color(0xFF8B8B8B),
-              ),
-              focusColor: Colors.white,
-              fillColor: const Color.fromARGB(127, 235, 252, 250),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: const BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.14),
+                  blurRadius: 10,
+                  offset: const Offset(4, 4), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextField(
+              controller: passwordController,
+              cursorColor: const Color(0xFF8B8B8B),
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                labelText: "Mot de passe",
+                labelStyle: const TextStyle(
+                  color: Color(0xFF8B8B8B),
+                ),
+                focusColor: Colors.white,
+                fillColor: const Color(0xFFAFDBD6),
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6),
+                  borderSide: const BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
                 ),
               ),
+              obscureText: true,
             ),
-            obscureText: true,
           ),
           const SizedBox(height: 20),
           ButtonGreenText(
@@ -104,8 +132,9 @@ class _LogInWidgetState extends State<LogInWidget> {
           const SizedBox(height: 24),
           GestureDetector(
             child: const Text(
-              "Mot de passe oublié ?",
+              "J'ai oublié mon mot de passe",
               style: TextStyle(
+                  fontSize: 12,
                   decoration: TextDecoration.underline,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
