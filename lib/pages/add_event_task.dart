@@ -6,7 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
-import 'package:freshmind/events/data/models/event.dart';
+import 'package:freshmind/models/event.dart';
 import 'package:freshmind/utils.dart';
 import 'package:get/get.dart';
 

@@ -5,12 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:freshmind/components/app_bar_title.dart';
-import 'package:freshmind/events/data/models/event.dart';
+import 'package:freshmind/models/event.dart';
 import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:freshmind/pages/add_event_task.dart';
 import 'package:freshmind/pages/event_details.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -541,6 +542,12 @@ class _CalendarState extends State<Calendar>
     return TabBar(
       unselectedLabelColor: const Color(0xFFD9DBDB),
       labelColor: const Color.fromARGB(255, 185, 124, 123),
+      labelStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.w600,
+      ),
+      unselectedLabelStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.w600,
+      ),
       indicatorColor: Colors.transparent,
       isScrollable: true,
       tabs: [

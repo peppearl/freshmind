@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/pages/calendar.dart';
+import 'package:freshmind/pages/recipes.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class FunctionnalitiesPage extends StatefulWidget {
@@ -69,7 +70,6 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                     PersistentNavBarNavigator.pushNewScreen(
                                         context,
                                         screen: const Calendar(),
-                                        //screen: const Calendar2(),
                                         withNavBar: true))),
                       ),
                       StaggeredGridTile.count(
@@ -182,7 +182,11 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       ],
                                     ) // button text
                                     ),
-                                onTap: () => {})),
+                                onTap: () =>
+                                    PersistentNavBarNavigator.pushNewScreen(
+                                        context,
+                                        screen: const Recipes(),
+                                        withNavBar: true))),
                       ),
                       StaggeredGridTile.count(
                         crossAxisCellCount: 2,

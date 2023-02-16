@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:freshmind/events/data/models/event.dart';
+import 'package:freshmind/models/event.dart';
 import 'package:freshmind/pages/add_event.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
