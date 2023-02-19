@@ -7,8 +7,6 @@ import 'package:freshmind/pages/recipe_details.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../icons/custom_icons_icons.dart';
-
 class Recipes extends StatefulWidget {
   const Recipes({super.key});
 
@@ -25,10 +23,14 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
 
   //to provide events in calendar
   late List<Recipe> _recipes;
+  late List<dynamic> _ingredients;
+  late List<dynamic> _ingredient_name;
 
   //get events from firebase
   _loadFirestoreEvents() async {
     _recipes = [];
+    _ingredients = [];
+    _ingredient_name = [];
 
     //get all events of current user
     final recipes = await FirebaseFirestore.instance
@@ -39,6 +41,38 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
         .get();
     final allRecipes = recipes.docs.map((doc) => doc.data()).toList();
     _recipes = allRecipes;
+
+    for (var doc in recipes.docs) {
+      final ingredients = doc["ingredients"].toList();
+      _ingredients = ingredients;
+      //print(_ingredients);
+
+      for (var i = 0; i < ingredients.length; i++) {
+        DocumentReference documentReference = FirebaseFirestore.instance
+            .collection("ingredients")
+            .doc(ingredients[i]["ingredient_id"]);
+        documentReference.get().then((datasnapshot) {
+          if (datasnapshot.exists) {
+            //print(datasnapshot.data());
+            //ingredients[i]["name"] = datasnapshot.data();
+            //print(datasnapshot.data());
+            Map<dynamic, dynamic>? map = datasnapshot.data() as Map?;
+            var test = map?.values.toList();
+            ingredients[i]["name"] = test;
+            print(ingredients[i]["name"]);
+          }
+        });
+
+        /*
+      documentReference.get().then((datasnapshot) {
+        if (datasnapshot.exists) {
+          print(datasnapshot.data().toString());
+        } else {
+          print("No such user");
+        }
+      });*/
+      }
+    }
 
     setState(() {});
   }
@@ -104,7 +138,8 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       onTap: () {
-                        Get.to(() => RecipeDetails(recipe: event));
+                        Get.to(() => RecipeDetails(
+                            recipe: event, ingredients: _ingredients));
                       });
                 }),
               ],
@@ -137,7 +172,8 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       onTap: () {
-                        Get.to(() => RecipeDetails(recipe: event));
+                        Get.to(() => RecipeDetails(
+                            recipe: event, ingredients: _ingredients));
                       });
                 }),
               ],
@@ -170,7 +206,8 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       onTap: () {
-                        Get.to(() => RecipeDetails(recipe: event));
+                        Get.to(() => RecipeDetails(
+                            recipe: event, ingredients: _ingredients));
                       });
                 }),
               ],
