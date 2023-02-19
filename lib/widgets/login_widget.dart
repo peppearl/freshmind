@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freshmind/components/button_green_text.dart';
 import 'package:freshmind/main.dart';
 import 'package:freshmind/pages/forgot_password_page.dart';
-import 'package:freshmind/utils.dart';
+import 'package:freshmind/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LogInWidget extends StatefulWidget {

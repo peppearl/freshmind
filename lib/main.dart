@@ -6,7 +6,7 @@ import 'package:freshmind/pages/auth_page.dart';
 import 'package:freshmind/pages/home.dart';
 import 'package:freshmind/pages/profile.dart';
 import 'package:freshmind/pages/verify_email_page.dart';
-import 'package:freshmind/utils.dart';
+import 'package:freshmind/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import './firebase_options.dart';

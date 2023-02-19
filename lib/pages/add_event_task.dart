@@ -7,7 +7,7 @@ import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
 import 'package:freshmind/components/input_field.dart';
 import 'package:freshmind/models/event.dart';
-import 'package:freshmind/utils.dart';
+import 'package:freshmind/utils/utils.dart';
 import 'package:get/get.dart';
 
 class AddEventTask extends StatefulWidget {
