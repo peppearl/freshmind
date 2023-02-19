@@ -51,9 +51,7 @@ dependencies:
   intl: ^0.17.0
   get: ^4.6.5
   table_calendar: ^3.0.8
-  shared_preferences: ^2.0.15
   flutter_speed_dial: ^6.2.0
-  firebase_helpers: ^0.6.0
   flutter_form_builder: ^7.7.0
   persistent_bottom_nav_bar: ^5.0.2
 
