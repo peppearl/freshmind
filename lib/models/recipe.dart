@@ -4,6 +4,7 @@ class Recipe {
   final String title;
   final String id;
   final String difficulty;
+  final String type;
   final bool cheap;
   final bool isFavorite;
   final bool planMeal;
@@ -21,6 +22,7 @@ class Recipe {
       required this.id,
       required this.difficulty,
       required this.cheap,
+      required this.type,
       required this.isFavorite,
       required this.planMeal,
       required this.cookingTime,
@@ -40,6 +42,7 @@ class Recipe {
       id: snapshot.id,
       difficulty: data['difficulty'],
       cheap: data['cheap'],
+      type: data['type'],
       planMeal: data['planMeal'],
       isFavorite: data['isFavorite'],
       cookingTime: data['cookingTime'],
@@ -59,6 +62,7 @@ class Recipe {
       'id': id,
       'difficulty': difficulty,
       'cheap': cheap,
+      'type': type,
       'isFavorite': isFavorite,
       'planMeal': planMeal,
       'cookingTime': cookingTime,
