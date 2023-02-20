@@ -499,11 +499,13 @@ class _CalendarState extends State<Calendar>
               labelBackgroundColor: Colors.transparent,
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
               onTap: () async {
-                final result =
-                    await Get.to(() => AddEvent(selectedDate: _selectedDay));
+                await Get.to(() => AddEvent(selectedDate: _selectedDay))
+                    ?.then((_) => {_loadFirestoreEvents()});
+                /*
                 if (result ?? false) {
                   _loadFirestoreEvents();
                 }
+                */
               },
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
           SpeedDialChild(
@@ -514,11 +516,13 @@ class _CalendarState extends State<Calendar>
               label: 'Tâches',
               labelStyle: const TextStyle(fontSize: 18.0, color: Colors.white),
               onTap: () async {
-                final result = await Get.to(
-                    () => AddEventTask(selectedDate: _selectedDay));
+                await Get.to(() => AddEventTask(selectedDate: _selectedDay))
+                    ?.then((_) => {_loadFirestoreEvents()});
+                /*
                 if (result ?? false) {
                   _loadFirestoreEvents();
                 }
+                */
               },
               labelShadow: [const BoxShadow(color: Colors.transparent)]),
         ],
