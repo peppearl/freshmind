@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/models/recipe.dart';
@@ -21,12 +20,10 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
   late List<Recipe> _recipes;
   late List<Recipe> _favoritesRecipes;
   late List<Recipe> _planMeals;
-  late List<dynamic> _ingredients;
 
   //get recipes from firebase
   _loadFirestoreRecipes() async {
     _recipes = [];
-    _ingredients = [];
     _favoritesRecipes = [];
     _planMeals = [];
 
@@ -39,26 +36,6 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
         .get();
     final allRecipes = recipes.docs.map((doc) => doc.data()).toList();
     _recipes = allRecipes;
-
-    for (var doc in recipes.docs) {
-      //put ingredients to list
-      final ingredients = doc["ingredients"].toList();
-      _ingredients = ingredients;
-
-      //get ingredients name
-      for (var i = 0; i < ingredients.length; i++) {
-        DocumentReference documentReference = FirebaseFirestore.instance
-            .collection("ingredients")
-            .doc(ingredients[i]["ingredient_id"]);
-        documentReference.get().then((datasnapshot) {
-          if (datasnapshot.exists) {
-            Map<dynamic, dynamic>? map = datasnapshot.data() as Map?;
-            final ingredientName = map?.values.toList();
-            ingredients[i]["name"] = ingredientName;
-          }
-        });
-      }
-    }
 
     //get all favorites recipes
     final favoritesRecipes = await FirebaseFirestore.instance
@@ -157,8 +134,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       onTap: () {
-                        Get.to(() => RecipeDetails(
-                                recipe: recipe, ingredients: _ingredients))
+                        Get.to(() => RecipeDetails(recipe: recipe))
                             ?.then((_) => {_loadFirestoreRecipes()});
                       });
                 }),
@@ -192,8 +168,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       onTap: () {
-                        Get.to(() => RecipeDetails(
-                                recipe: recipe, ingredients: _ingredients))
+                        Get.to(() => RecipeDetails(recipe: recipe))
                             ?.then((_) => {_loadFirestoreRecipes()});
                         ;
                       });
@@ -228,8 +203,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       onTap: () {
-                        Get.to(() => RecipeDetails(
-                                recipe: recipe, ingredients: _ingredients))
+                        Get.to(() => RecipeDetails(recipe: recipe))
                             ?.then((_) => {_loadFirestoreRecipes()});
                       });
                 }),

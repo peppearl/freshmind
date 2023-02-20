@@ -19,12 +19,12 @@ class Ingredient {
     return Ingredient(
       name: data['name'],
       id: snapshot.id,
-      unit: data['user_id'],
+      unit: data['unit'],
       quantity: data['quantity'],
     );
   }
 
-  Map<String, Object?> toFirestore() {
+  Map<String, dynamic> toFirestore() {
     return {
       'name': name,
       'id': id,

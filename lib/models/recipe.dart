@@ -9,7 +9,7 @@ class Recipe {
   final bool planMeal;
   final int cookingTime;
   final String image;
-  /* final List<Ingredient> ingredients; */
+  final List<dynamic> ingredients;
   final int preparationTime;
   final int readyInMinutes;
   final int servings;
@@ -25,7 +25,7 @@ class Recipe {
       required this.planMeal,
       required this.cookingTime,
       required this.image,
-      /* required this.ingredients, */
+      required this.ingredients,
       required this.preparationTime,
       required this.readyInMinutes,
       required this.servings,
@@ -44,8 +44,7 @@ class Recipe {
       isFavorite: data['isFavorite'],
       cookingTime: data['cookingTime'],
       image: data['image'],
-      /*ingredients: List<Ingredient>.from(
-          data["ingredients"].map((x) => Ingredient.fromFirestore(x))), */
+      ingredients: data["ingredients"],
       preparationTime: data['preparationTime'],
       readyInMinutes: data['readyInMinutes'],
       servings: data['servings'],
@@ -64,7 +63,7 @@ class Recipe {
       'planMeal': planMeal,
       'cookingTime': cookingTime,
       'image': image,
-      /* 'ingredients': ingredients, */
+      'ingredients': ingredients.map<Map>((e) => e.toFirestore()).toList(),
       'preparationTime': preparationTime,
       'readyInMinutes': readyInMinutes,
       'servings': servings,

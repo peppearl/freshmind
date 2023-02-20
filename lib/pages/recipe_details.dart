@@ -8,9 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class RecipeDetails extends StatefulWidget {
   final Recipe recipe;
-  final List<dynamic> ingredients;
-  const RecipeDetails(
-      {super.key, required this.recipe, required this.ingredients});
+  const RecipeDetails({super.key, required this.recipe});
 
   @override
   State<RecipeDetails> createState() => _RecipeDetailsState();
@@ -194,24 +192,25 @@ class _RecipeDetailsState extends State<RecipeDetails>
                       const EdgeInsets.only(left: 25, right: 25, bottom: 5),
                   child: Row(
                     children: [
-                      Text(widget.ingredients[index]["name"]
+                      Text(widget.recipe.ingredients[index]['name']
                           .toString()
-                          .replaceAll(RegExp(r"\p{P}", unicode: true), '')
                           .capitalizeFirst!),
                       const Spacer(),
-                      Text(widget.ingredients[index]['quantity'].toString(),
+                      Text(
+                          widget.recipe.ingredients[index]['quantity']
+                              .toString(),
                           style: const TextStyle(color: Color(0xFF8A949F))),
                       const SizedBox(
                         width: 3,
                       ),
                       Text(
-                        widget.ingredients[index]['unit'],
+                        widget.recipe.ingredients[index]['unit'],
                         style: const TextStyle(color: Color(0xFF8A949F)),
                       ),
                     ],
                   ),
                 ),
-                childCount: widget.ingredients.length,
+                childCount: widget.recipe.ingredients.length,
               ),
             ),
             SliverList(
