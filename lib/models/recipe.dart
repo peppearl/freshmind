@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:freshmind/models/ingredient.dart';
 
 class Recipe {
   final String title;
   final String id;
   final String difficulty;
   final bool cheap;
+  final bool isFavorite;
+  final bool planMeal;
   final int cookingTime;
   final String image;
   /* final List<Ingredient> ingredients; */
@@ -20,6 +21,8 @@ class Recipe {
       required this.id,
       required this.difficulty,
       required this.cheap,
+      required this.isFavorite,
+      required this.planMeal,
       required this.cookingTime,
       required this.image,
       /* required this.ingredients, */
@@ -37,6 +40,8 @@ class Recipe {
       id: snapshot.id,
       difficulty: data['difficulty'],
       cheap: data['cheap'],
+      planMeal: data['planMeal'],
+      isFavorite: data['isFavorite'],
       cookingTime: data['cookingTime'],
       image: data['image'],
       /*ingredients: List<Ingredient>.from(
@@ -55,6 +60,8 @@ class Recipe {
       'id': id,
       'difficulty': difficulty,
       'cheap': cheap,
+      'isFavorite': isFavorite,
+      'planMeal': planMeal,
       'cookingTime': cookingTime,
       'image': image,
       /* 'ingredients': ingredients, */

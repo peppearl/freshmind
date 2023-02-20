@@ -18,61 +18,70 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
   //for the tab
   late TabController _tabController;
 
-  //get auth user info
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  //to provide events in calendar
   late List<Recipe> _recipes;
+  late List<Recipe> _favoritesRecipes;
+  late List<Recipe> _planMeals;
   late List<dynamic> _ingredients;
-  late List<dynamic> _ingredient_name;
 
-  //get events from firebase
-  _loadFirestoreEvents() async {
+  //get recipes from firebase
+  _loadFirestoreRecipes() async {
     _recipes = [];
     _ingredients = [];
-    _ingredient_name = [];
+    _favoritesRecipes = [];
+    _planMeals = [];
 
-    //get all events of current user
+    //get all recipes
     final recipes = await FirebaseFirestore.instance
         .collection('recipes')
         .withConverter(
             fromFirestore: Recipe.fromFirestore,
-            toFirestore: (event, options) => event.toFirestore())
+            toFirestore: (recipe, options) => recipe.toFirestore())
         .get();
     final allRecipes = recipes.docs.map((doc) => doc.data()).toList();
     _recipes = allRecipes;
 
     for (var doc in recipes.docs) {
+      //put ingredients to list
       final ingredients = doc["ingredients"].toList();
       _ingredients = ingredients;
-      //print(_ingredients);
 
+      //get ingredients name
       for (var i = 0; i < ingredients.length; i++) {
         DocumentReference documentReference = FirebaseFirestore.instance
             .collection("ingredients")
             .doc(ingredients[i]["ingredient_id"]);
         documentReference.get().then((datasnapshot) {
           if (datasnapshot.exists) {
-            //print(datasnapshot.data());
-            //ingredients[i]["name"] = datasnapshot.data();
-            //print(datasnapshot.data());
             Map<dynamic, dynamic>? map = datasnapshot.data() as Map?;
-            var test = map?.values.toList();
-            ingredients[i]["name"] = test;
-            print(ingredients[i]["name"]);
+            final ingredientName = map?.values.toList();
+            ingredients[i]["name"] = ingredientName;
           }
         });
-
-        /*
-      documentReference.get().then((datasnapshot) {
-        if (datasnapshot.exists) {
-          print(datasnapshot.data().toString());
-        } else {
-          print("No such user");
-        }
-      });*/
       }
     }
+
+    //get all favorites recipes
+    final favoritesRecipes = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('isFavorite', isEqualTo: true)
+        .withConverter(
+            fromFirestore: Recipe.fromFirestore,
+            toFirestore: (recipe, options) => recipe.toFirestore())
+        .get();
+    final allfavoritesRecipes =
+        favoritesRecipes.docs.map((doc) => doc.data()).toList();
+    _favoritesRecipes = allfavoritesRecipes;
+
+    //get all favorites recipes
+    final planMeals = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('planMeal', isEqualTo: true)
+        .withConverter(
+            fromFirestore: Recipe.fromFirestore,
+            toFirestore: (recipe, options) => recipe.toFirestore())
+        .get();
+    final allPlanMeals = planMeals.docs.map((doc) => doc.data()).toList();
+    _planMeals = allPlanMeals;
 
     setState(() {});
   }
@@ -81,8 +90,8 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    //events loaded at the beginning
-    _loadFirestoreEvents();
+    //recipes loaded at the beginning
+    _loadFirestoreRecipes();
 
     //tabs
     _tabController = TabController(length: 3, vsync: this);
@@ -94,9 +103,19 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  //to display event markers
+  //to display all recipes
   List _getRecipes() {
     return _recipes;
+  }
+
+  //to display favorites recipes
+  List _getFavoritesRecipes() {
+    return _favoritesRecipes;
+  }
+
+  //to display plan meals
+  List _getPlanMeals() {
+    return _planMeals;
   }
 
   @override
@@ -113,7 +132,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
             GridView.count(
               crossAxisCount: 2,
               children: [
-                ..._getRecipes().map((event) {
+                ..._getRecipes().map((recipe) {
                   return GestureDetector(
                       child: Container(
                         height: 150,
@@ -125,11 +144,11 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                             Radius.circular(20),
                           ),
                           image: DecorationImage(
-                              image: NetworkImage(event.image),
+                              image: NetworkImage(recipe.image),
                               fit: BoxFit.cover),
                         ),
                         child: Center(
-                          child: Text(event.title,
+                          child: Text(recipe.title,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: 16,
@@ -139,7 +158,8 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                       ),
                       onTap: () {
                         Get.to(() => RecipeDetails(
-                            recipe: event, ingredients: _ingredients));
+                                recipe: recipe, ingredients: _ingredients))
+                            ?.then((_) => {_loadFirestoreRecipes()});
                       });
                 }),
               ],
@@ -147,7 +167,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
             GridView.count(
               crossAxisCount: 2,
               children: [
-                ..._getRecipes().map((event) {
+                ..._getFavoritesRecipes().map((recipe) {
                   return GestureDetector(
                       child: Container(
                         height: 150,
@@ -159,11 +179,11 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                             Radius.circular(20),
                           ),
                           image: DecorationImage(
-                              image: NetworkImage(event.image),
+                              image: NetworkImage(recipe.image),
                               fit: BoxFit.cover),
                         ),
                         child: Center(
-                          child: Text(event.title,
+                          child: Text(recipe.title,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: 16,
@@ -173,7 +193,9 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                       ),
                       onTap: () {
                         Get.to(() => RecipeDetails(
-                            recipe: event, ingredients: _ingredients));
+                                recipe: recipe, ingredients: _ingredients))
+                            ?.then((_) => {_loadFirestoreRecipes()});
+                        ;
                       });
                 }),
               ],
@@ -181,7 +203,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
             GridView.count(
               crossAxisCount: 2,
               children: [
-                ..._getRecipes().map((event) {
+                ..._getPlanMeals().map((recipe) {
                   return GestureDetector(
                       child: Container(
                         height: 150,
@@ -193,11 +215,11 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                             Radius.circular(20),
                           ),
                           image: DecorationImage(
-                              image: NetworkImage(event.image),
+                              image: NetworkImage(recipe.image),
                               fit: BoxFit.cover),
                         ),
                         child: Center(
-                          child: Text(event.title,
+                          child: Text(recipe.title,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   fontSize: 16,
@@ -207,7 +229,8 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
                       ),
                       onTap: () {
                         Get.to(() => RecipeDetails(
-                            recipe: event, ingredients: _ingredients));
+                                recipe: recipe, ingredients: _ingredients))
+                            ?.then((_) => {_loadFirestoreRecipes()});
                       });
                 }),
               ],
@@ -238,7 +261,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
           text: "Mes favoris".toUpperCase(),
         ),
         Tab(
-          text: "Pour le dîner".toUpperCase(),
+          text: "Planning".toUpperCase(),
         ),
       ],
       controller: _tabController,
