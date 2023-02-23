@@ -32,4 +32,7 @@ class CustomIcons {
   static const IconData recipes_custom = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData search_custom = IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData selfcare_custom = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData heart_border_custom = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData heart_custom = IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData todolist_custom = IconData(0xe80d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
