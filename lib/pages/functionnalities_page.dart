@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/pages/calendar.dart';
+import 'package:freshmind/pages/groceries.dart';
 import 'package:freshmind/pages/recipes.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -148,7 +149,11 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       ],
                                     ) // button text
                                     ),
-                                onTap: () => {})),
+                                onTap: () =>
+                                    PersistentNavBarNavigator.pushNewScreen(
+                                        context,
+                                        screen: const Groceries(),
+                                        withNavBar: true))),
                       ),
                       StaggeredGridTile.count(
                         crossAxisCellCount: 2,
@@ -209,10 +214,10 @@ class _FunctionnalitiesPageState extends State<FunctionnalitiesPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: const [
-                                        Icon(Icons.checklist_rounded,
+                                        Icon(CustomIcons.todolist_custom,
                                             size: 50, color: Colors.white),
                                         SizedBox(height: 10),
-                                        Text("Mes to do lists",
+                                        Text("To do list",
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 height: 1.5,
