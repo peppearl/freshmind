@@ -5,6 +5,7 @@ import 'package:freshmind/models/recipe.dart';
 import 'package:freshmind/pages/recipe_details.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:freshmind/icons/custom_icons_icons.dart';
 
 class Recipes extends StatefulWidget {
   const Recipes({super.key});
@@ -13,13 +14,18 @@ class Recipes extends StatefulWidget {
   State<Recipes> createState() => _RecipesState();
 }
 
-class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
+class _RecipesState extends State<Recipes> with TickerProviderStateMixin {
   //for the tab
   late TabController _tabController;
 
   late List<Recipe> _recipes;
   late List<Recipe> _favoritesRecipes;
   late List<Recipe> _planMeals;
+
+  //bool isFavorite;
+
+  late final AnimationController _controller = AnimationController(
+      duration: const Duration(milliseconds: 200), vsync: this, value: 1.0);
 
   //get recipes from firebase
   _loadFirestoreRecipes() async {
@@ -49,7 +55,7 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
         favoritesRecipes.docs.map((doc) => doc.data()).toList();
     _favoritesRecipes = allfavoritesRecipes;
 
-    //get all favorites recipes
+    //get all planned meals
     final planMeals = await FirebaseFirestore.instance
         .collection('recipes')
         .where('planMeal', isEqualTo: true)
@@ -110,28 +116,69 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
               crossAxisCount: 2,
               children: [
                 ..._getRecipes().map((recipe) {
+                  bool isFavorite = recipe.isFavorite;
                   return GestureDetector(
-                      child: Container(
-                        height: 150,
-                        width: 170,
-                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(20),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 150,
+                            width: 170,
+                            margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                              image: DecorationImage(
+                                  image: NetworkImage(recipe.image),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Center(
+                              child: Text(recipe.title,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      height: 1.5,
+                                      color: Colors.white)),
+                            ),
                           ),
-                          image: DecorationImage(
-                              image: NetworkImage(recipe.image),
-                              fit: BoxFit.cover),
-                        ),
-                        child: Center(
-                          child: Text(recipe.title,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  height: 1.5,
-                                  color: Colors.white)),
-                        ),
+                          Positioned(
+                              right: 30,
+                              bottom: 30,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                    FirebaseFirestore.instance
+                                        .collection('recipes')
+                                        .doc(recipe.id)
+                                        .update({
+                                      "isFavorite": isFavorite,
+                                    });
+                                    _loadFirestoreRecipes();
+                                  });
+                                  _controller
+                                      .reverse()
+                                      .then((value) => _controller.forward());
+                                },
+                                child: ScaleTransition(
+                                  scale: Tween(begin: 0.7, end: 1.0).animate(
+                                      CurvedAnimation(
+                                          parent: _controller,
+                                          curve: Curves.easeOut)),
+                                  child: isFavorite
+                                      ? const Icon(
+                                          CustomIcons.heart_custom,
+                                          size: 25,
+                                          color: Colors.white,
+                                        )
+                                      : const Icon(
+                                          CustomIcons.heart_border_custom,
+                                          size: 25,
+                                          color: Colors.white),
+                                ),
+                              )),
+                        ],
                       ),
                       onTap: () {
                         Get.to(() => RecipeDetails(recipe: recipe))
@@ -144,28 +191,69 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
               crossAxisCount: 2,
               children: [
                 ..._getFavoritesRecipes().map((recipe) {
+                  bool isFavorite = recipe.isFavorite;
                   return GestureDetector(
-                      child: Container(
-                        height: 150,
-                        width: 170,
-                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(20),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 150,
+                            width: 170,
+                            margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                              image: DecorationImage(
+                                  image: NetworkImage(recipe.image),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Center(
+                              child: Text(recipe.title,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      height: 1.5,
+                                      color: Colors.white)),
+                            ),
                           ),
-                          image: DecorationImage(
-                              image: NetworkImage(recipe.image),
-                              fit: BoxFit.cover),
-                        ),
-                        child: Center(
-                          child: Text(recipe.title,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  height: 1.5,
-                                  color: Colors.white)),
-                        ),
+                          Positioned(
+                              right: 30,
+                              bottom: 30,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                    FirebaseFirestore.instance
+                                        .collection('recipes')
+                                        .doc(recipe.id)
+                                        .update({
+                                      "isFavorite": isFavorite,
+                                    });
+                                    _loadFirestoreRecipes();
+                                  });
+                                  _controller
+                                      .reverse()
+                                      .then((value) => _controller.forward());
+                                },
+                                child: ScaleTransition(
+                                  scale: Tween(begin: 0.7, end: 1.0).animate(
+                                      CurvedAnimation(
+                                          parent: _controller,
+                                          curve: Curves.easeOut)),
+                                  child: isFavorite
+                                      ? const Icon(
+                                          CustomIcons.heart_custom,
+                                          size: 20,
+                                          color: Colors.white,
+                                        )
+                                      : const Icon(
+                                          CustomIcons.heart_border_custom,
+                                          size: 20,
+                                          color: Colors.white),
+                                ),
+                              )),
+                        ],
                       ),
                       onTap: () {
                         Get.to(() => RecipeDetails(recipe: recipe))
@@ -179,28 +267,69 @@ class _RecipesState extends State<Recipes> with SingleTickerProviderStateMixin {
               crossAxisCount: 2,
               children: [
                 ..._getPlanMeals().map((recipe) {
+                  bool isFavorite = recipe.isFavorite;
                   return GestureDetector(
-                      child: Container(
-                        height: 150,
-                        width: 170,
-                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(20),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 150,
+                            width: 170,
+                            margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                              image: DecorationImage(
+                                  image: NetworkImage(recipe.image),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Center(
+                              child: Text(recipe.title,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      height: 1.5,
+                                      color: Colors.white)),
+                            ),
                           ),
-                          image: DecorationImage(
-                              image: NetworkImage(recipe.image),
-                              fit: BoxFit.cover),
-                        ),
-                        child: Center(
-                          child: Text(recipe.title,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  height: 1.5,
-                                  color: Colors.white)),
-                        ),
+                          Positioned(
+                              right: 30,
+                              bottom: 30,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                    FirebaseFirestore.instance
+                                        .collection('recipes')
+                                        .doc(recipe.id)
+                                        .update({
+                                      "isFavorite": isFavorite,
+                                    });
+                                    _loadFirestoreRecipes();
+                                  });
+                                  _controller
+                                      .reverse()
+                                      .then((value) => _controller.forward());
+                                },
+                                child: ScaleTransition(
+                                  scale: Tween(begin: 0.7, end: 1.0).animate(
+                                      CurvedAnimation(
+                                          parent: _controller,
+                                          curve: Curves.easeOut)),
+                                  child: isFavorite
+                                      ? const Icon(
+                                          CustomIcons.heart_custom,
+                                          size: 20,
+                                          color: Colors.white,
+                                        )
+                                      : const Icon(
+                                          CustomIcons.heart_border_custom,
+                                          size: 20,
+                                          color: Colors.white),
+                                ),
+                              )),
+                        ],
                       ),
                       onTap: () {
                         Get.to(() => RecipeDetails(recipe: recipe))

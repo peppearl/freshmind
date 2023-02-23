@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:freshmind/components/app_bar_title.dart';
 import 'package:freshmind/components/button_white_text.dart';
+import 'package:freshmind/icons/custom_icons_icons.dart';
 import 'package:freshmind/models/recipe.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -63,7 +64,7 @@ class _RecipeDetailsState extends State<RecipeDetails>
           slivers: [
             SliverAppBar(
               pinned: true,
-              automaticallyImplyLeading: false,
+              //automaticallyImplyLeading: false,
               centerTitle: true,
               expandedHeight: 200,
               flexibleSpace: Container(
@@ -199,13 +200,13 @@ class _RecipeDetailsState extends State<RecipeDetails>
                       Text(
                           widget.recipe.ingredients[index]['quantity']
                               .toString(),
-                          style: const TextStyle(color: Color(0xFF8A949F))),
+                          style: const TextStyle(color: Color(0xFF73BBB3))),
                       const SizedBox(
                         width: 3,
                       ),
                       Text(
                         widget.recipe.ingredients[index]['unit'],
-                        style: const TextStyle(color: Color(0xFF8A949F)),
+                        style: const TextStyle(color: Color(0xFF73BBB3)),
                       ),
                     ],
                   ),
@@ -347,8 +348,8 @@ class _RecipeDetailsState extends State<RecipeDetails>
                                               ),
                                             ),
                                             child: const Icon(
-                                              Icons.favorite,
-                                              size: 30,
+                                              CustomIcons.heart_custom,
+                                              size: 28,
                                               color: Color.fromARGB(
                                                   255, 185, 124, 123),
                                             ),
@@ -362,8 +363,8 @@ class _RecipeDetailsState extends State<RecipeDetails>
                                               ),
                                             ),
                                             child: const Icon(
-                                                Icons.favorite_border,
-                                                size: 30,
+                                                CustomIcons.heart_border_custom,
+                                                size: 28,
                                                 color: Color.fromARGB(
                                                     255, 185, 124, 123)),
                                           ),
